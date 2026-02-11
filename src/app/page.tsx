@@ -11,33 +11,33 @@ export default function LandingPage() {
       <main>
         {/* Hero */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">
-          <div className="bg-brand rounded-[2rem] overflow-hidden">
+          <div className="bg-gradient-hero rounded-[2.5rem] overflow-hidden shadow-card-hover transition-smooth hover:shadow-2xl animate-fade-in-up">
             <div className="grid lg:grid-cols-2 gap-0">
               <div className="p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
-                <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1]">
+                <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] animate-fade-in-down">
                   Discover brand champions.
                 </h1>
-                <p className="mt-4 text-white/80 text-base sm:text-lg max-w-md leading-relaxed">
+                <p className="mt-4 text-white/85 text-base sm:text-lg max-w-md leading-relaxed animate-fade-in-down" style={{animationDelay: "0.1s"}}>
                   Search creators, run campaigns, approve content, and track performance—one workspace for social commerce.
                 </p>
                 <div className="mt-8">
-                  <Link href="/auth" className="inline-flex items-center gap-2 bg-white text-gray-900 font-semibold text-sm px-6 py-3.5 rounded-full hover:bg-gray-50 transition-colors">
-                    Get Started <ArrowRight className="w-4 h-4" />
+                  <Link href="/auth" className="inline-flex items-center gap-2 bg-white text-gray-900 font-semibold text-sm px-6 py-3.5 rounded-full hover-lift hover:shadow-xl transition-smooth">
+                    Get Started <ArrowRight className="w-4 h-4 transition-smooth group-hover:translate-x-1" />
                   </Link>
                 </div>
               </div>
               <div className="p-4 sm:p-6 lg:p-8">
                 <div className="grid grid-cols-3 grid-rows-2 gap-3 h-full min-h-[300px]">
                   {[
-                    { bg: "bg-blue-200", label: "@samanthalu" },
-                    { bg: "bg-pink-200", label: "Fashion" },
-                    { bg: "bg-amber-200", label: "@alenpalander" },
-                    { bg: "bg-emerald-200", label: "Pets" },
-                    { bg: "bg-violet-200", label: "Outdoors" },
-                    { bg: "bg-cyan-200", label: "@the.truth.doctor" },
+                    { bg: "bg-neon-blue", label: "@samanthalu" },
+                    { bg: "bg-pink-300", label: "Fashion" },
+                    { bg: "bg-amber-300", label: "@alenpalander" },
+                    { bg: "bg-emerald-300", label: "Pets" },
+                    { bg: "bg-neon-purple", label: "Outdoors" },
+                    { bg: "bg-neon-cyan", label: "@the.truth.doctor" },
                   ].map((tile, i) => (
-                    <div key={i} className={`${tile.bg} rounded-2xl flex items-end p-3 ${i === 3 ? "col-span-1" : ""}`}>
-                      <span className="text-xs font-bold bg-white/80 backdrop-blur px-2.5 py-1 rounded-full truncate">{tile.label}</span>
+                    <div key={i} className={`${tile.bg} rounded-3xl flex items-end p-3 ${i === 3 ? "col-span-1" : ""} shadow-md hover-lift transition-smooth animate-fade-in-up`} style={{animationDelay: `${i * 0.05}s`}}>
+                      <span className="text-xs font-bold bg-white/90 backdrop-blur px-2.5 py-1 rounded-full truncate">{tile.label}</span>
                     </div>
                   ))}
                 </div>
@@ -74,12 +74,12 @@ export default function LandingPage() {
               { icon: MessageCircle, title: "Instant Chat", desc: "Instantly chat with creators and stay in touch throughout the whole collaboration." },
               { icon: Users, title: "Secure Payments", desc: "Your money is held safely until you approve the creator's work." },
             ].map((f, i) => (
-              <div key={i} className="border border-gray-100 rounded-2xl p-6 hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center mb-4">
-                  <f.icon className="w-5 h-5 text-brand" />
+              <div key={i} className="border border-gray-200 rounded-3xl p-6 bg-white hover-lift hover:shadow-card-hover hover:border-brand/30 transition-smooth animate-fade-in-up" style={{animationDelay: `${i * 0.1}s`}}>
+                <div className="w-10 h-10 rounded-xl bg-brand/15 flex items-center justify-center mb-4 transition-smooth group-hover:scale-110">
+                  <f.icon className="w-5 h-5 text-brand transition-smooth" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">{f.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+                <p className="text-sm text-gray-600 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -95,10 +95,10 @@ export default function LandingPage() {
                 { step: "2", title: "Collaborate & Create", desc: "Send briefs, negotiate terms, approve content—all within one organized workspace." },
                 { step: "3", title: "Track & Pay", desc: "Monitor campaign performance in real time and release payments when deliverables are approved." },
               ].map((s, i) => (
-                <div key={i} className="bg-white rounded-2xl p-8 shadow-sm">
-                  <div className="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center font-bold text-lg mb-4">{s.step}</div>
+                <div key={i} className="bg-white rounded-3xl p-8 shadow-card hover-lift hover:shadow-card-hover transition-smooth animate-fade-in-up" style={{animationDelay: `${i * 0.1}s`}}>
+                  <div className="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center font-bold text-lg mb-4 transition-smooth hover:scale-110">{s.step}</div>
                   <h3 className="font-bold text-xl mb-2">{s.title}</h3>
-                  <p className="text-gray-500 leading-relaxed">{s.desc}</p>
+                  <p className="text-gray-600 leading-relaxed">{s.desc}</p>
                 </div>
               ))}
             </div>
@@ -120,41 +120,41 @@ export default function LandingPage() {
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-center mb-10">Creators for every industry</h2>
           <div className="flex flex-wrap justify-center gap-2 mb-10">
             {["All Categories", "Fashion", "Beauty", "Tech", "Food", "Fitness", "Travel", "Finance", "Gaming"].map((cat, i) => (
-              <button key={i} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${i === 0 ? "bg-accent text-black" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
+              <button key={i} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${i === 0 ? "bg-accent text-black font-semibold shadow-md" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
                 {cat}
               </button>
             ))}
           </div>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
             {["Fitness", "Beauty", "Tech", "Food", "Travel", "Fashion"].map((niche, i) => (
-              <div key={i} className={`aspect-[3/4] rounded-[2rem] ${["bg-orange-200","bg-pink-200","bg-blue-200","bg-amber-200","bg-cyan-200","bg-violet-200"][i]} flex items-end justify-center p-3`}>
-                <span className="text-xs font-bold bg-white/80 backdrop-blur px-3 py-1 rounded-full">{niche}</span>
+              <div key={i} className={`aspect-[3/4] rounded-[2.5rem] ${["bg-orange-400","bg-pink-400","bg-neon-blue","bg-amber-400","bg-neon-cyan","bg-neon-purple"][i]} flex items-end justify-center p-3 shadow-md hover-lift hover:shadow-lg transition-smooth animate-fade-in-up`} style={{animationDelay: `${i * 0.08}s`}}>
+                <span className="text-xs font-bold bg-white/95 backdrop-blur px-3 py-1 rounded-full text-gray-900">{niche}</span>
               </div>
             ))}
           </div>
         </section>
 
         {/* IRL Section */}
-        <section className="bg-black text-white py-20">
+        <section className="bg-gradient-hero-dark text-white py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-800 rounded-2xl aspect-video col-span-2 flex items-center justify-center text-gray-600">
+                <div className="bg-gray-700 rounded-3xl aspect-video col-span-2 flex items-center justify-center text-gray-500 shadow-card">
                   <span className="text-sm">Event photo</span>
                 </div>
-                <div className="bg-gray-800 rounded-full aspect-square flex items-center justify-center text-gray-600">
+                <div className="bg-gray-700 rounded-full aspect-square flex items-center justify-center text-gray-500 shadow-card">
                   <span className="text-xs">Creator</span>
                 </div>
-                <div className="bg-gray-800 rounded-2xl aspect-square flex items-center justify-center text-gray-600">
+                <div className="bg-gray-700 rounded-3xl aspect-square flex items-center justify-center text-gray-500 shadow-card">
                   <span className="text-xs">Event</span>
                 </div>
               </div>
               <div>
                 <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">We bring marketers and creators together IRL, too.</h2>
-                <p className="mt-4 text-gray-400 text-lg">Join us and spend an evening with the most-loved content creators in your city.</p>
+                <p className="mt-4 text-gray-300 text-lg">Join us and spend an evening with the most-loved content creators in your city.</p>
                 <div className="flex gap-2 mt-6 flex-wrap">
                   {["Los Angeles", "Chicago", "Toronto", "New York", "Miami"].map((city) => (
-                    <span key={city} className="bg-accent text-black text-xs font-bold px-3 py-1.5 rounded-full">{city}</span>
+                    <span key={city} className="bg-accent text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-md">{city}</span>
                   ))}
                 </div>
               </div>

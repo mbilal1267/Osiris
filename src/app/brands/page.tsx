@@ -10,27 +10,27 @@ export default function BrandsPage() {
       <NavbarPublic />
       <main>
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">
-          <div className="bg-surface rounded-[2rem] overflow-hidden">
+          <div className="bg-surface rounded-[2.5rem] overflow-hidden shadow-card-hover border border-gray-200 transition-smooth hover:shadow-2xl animate-fade-in-up">
             <div className="grid lg:grid-cols-2 gap-0">
               <div className="p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
-                <span className="inline-flex text-xs font-bold bg-accent px-3 py-1 rounded-full w-fit mb-4">Osiris for brands</span>
-                <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1]">Collaborate with top creators</h1>
-                <p className="mt-4 text-gray-600 text-lg max-w-md leading-relaxed">Build your creator roster—faster. Shortlist creators with the right audience, launch campaigns, and measure ROI.</p>
+                <span className="inline-flex text-xs font-bold bg-accent px-3 py-1 rounded-full w-fit mb-4 text-gray-900 animate-fade-in-down">Osiris for brands</span>
+                <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] animate-fade-in-down" style={{animationDelay: "0.1s"}}>Collaborate with top creators</h1>
+                <p className="mt-4 text-gray-700 text-lg max-w-md leading-relaxed animate-fade-in-down" style={{animationDelay: "0.2s"}}>Build your creator roster—faster. Shortlist creators with the right audience, launch campaigns, and measure ROI.</p>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <Link href="/auth?tab=signup&role=brand" className="inline-flex items-center gap-2 bg-black text-white font-semibold text-sm px-6 py-3.5 rounded-full hover:bg-gray-800 transition-colors">Book a Demo</Link>
+                  <Link href="/auth?tab=signup&role=brand" className="inline-flex items-center gap-2 bg-black text-white font-semibold text-sm px-6 py-3.5 rounded-full hover-lift hover:bg-gray-800 transition-smooth shadow-md hover:shadow-lg animate-fade-in-down" style={{animationDelay: "0.3s"}}>Book a Demo</Link>
                 </div>
                 <div className="flex items-center gap-2 mt-6">
-                  <Link href="/creators" className="text-sm text-gray-600 underline">Are you a creator? Join Osiris</Link>
+                  <Link href="/creators" className="text-sm text-gray-700 underline hover:text-gray-900 transition-colors">Are you a creator? Join Osiris</Link>
                 </div>
                 <div className="flex items-center gap-2 mt-4">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />)}
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-red-500 text-red-500 transition-smooth hover:scale-125" style={{animationDelay: `${i * 0.05}s`}} />)}
                   <span className="text-xs font-bold text-red-600 uppercase tracking-wide">&ldquo;Best customer support&rdquo;</span>
                 </div>
               </div>
               <div className="p-6 lg:p-8">
                 <div className="grid grid-cols-3 grid-rows-2 gap-3 h-full min-h-[300px]">
-                  {["bg-blue-200","bg-pink-200","bg-amber-200","bg-emerald-200","bg-violet-200","bg-cyan-200"].map((bg, i) => (
-                    <div key={i} className={`${bg} rounded-2xl ${i === 4 ? "col-span-2" : ""}`}></div>
+                  {["bg-neon-blue","bg-pink-400","bg-amber-400","bg-emerald-400","bg-neon-purple","bg-neon-cyan"].map((bg, i) => (
+                    <div key={i} className={`${bg} rounded-3xl ${i === 4 ? "col-span-2" : ""} shadow-md hover-lift transition-smooth animate-fade-in-up`} style={{animationDelay: `${i * 0.08}s`}}></div>
                   ))}
                 </div>
               </div>
@@ -87,10 +87,10 @@ export default function BrandsPage() {
                 { icon: Zap, t: "Execute", d: "Manage briefs, contracts, approvals, and payments all in one workspace." },
                 { icon: BarChart3, t: "Measure", d: "Track real-time ROI with conversion attribution across every creator and campaign." }
               ].map((f, i) => (
-                <div key={i} className="bg-surface rounded-2xl p-8 text-center">
-                  <div className="w-12 h-12 rounded-xl bg-brand/10 mx-auto flex items-center justify-center mb-4"><f.icon className="w-6 h-6 text-brand" /></div>
+                <div key={i} className="bg-surface rounded-3xl p-8 text-center border border-gray-200 shadow-card hover-lift hover:shadow-card-hover transition-smooth animate-fade-in-up" style={{animationDelay: `${i * 0.1}s`}}>
+                  <div className="w-12 h-12 rounded-xl bg-brand/15 mx-auto flex items-center justify-center mb-4 transition-smooth group-hover:scale-110"><f.icon className="w-6 h-6 text-brand" /></div>
                   <h3 className="font-bold text-xl mb-2">{f.t}</h3>
-                  <p className="text-gray-500">{f.d}</p>
+                  <p className="text-gray-600">{f.d}</p>
                 </div>
               ))}
             </div>
