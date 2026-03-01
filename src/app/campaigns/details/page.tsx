@@ -1,5 +1,5 @@
 "use client";
-import { Navbar } from "@/components/campaign-details/navbar";
+import NavbarApp from "@/components/NavbarApp";
 import { CampaignDetails } from "@/components/campaign-details/campaign-details";
 import { CreatorsList } from "@/components/campaign-details/creators-list";
 import { CampaignMetrics } from "@/components/campaign-details/campaign-metrics";
@@ -38,7 +38,7 @@ export default function CampaignDetailsPage() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <Navbar />
+            <NavbarApp />
 
             <main className="mx-auto max-w-7xl px-6 py-8">
                 {/* Two Column Layout */}

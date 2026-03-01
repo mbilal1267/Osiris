@@ -1,4 +1,4 @@
-import { TopNavigation } from "@/components/creator-management/TopNavigation";
+import NavbarApp from "@/components/NavbarApp";
 import { ActionCard } from "@/components/creator-management/ActionCard";
 import { TopCreatorsList } from "@/components/creator-management/TopCreatorsList";
 import { AnalyticsCard } from "@/components/creator-management/AnalyticsCard";
@@ -7,7 +7,7 @@ export default function CreatorManagementPage() {
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Top Navigation */}
-            <TopNavigation />
+            <NavbarApp />
 
             {/* Main Content */}
             <main className="max-w-[1600px] mx-auto px-6 py-8">

@@ -1,6 +1,7 @@
 "use client";
 import { Eye, TrendingUp, ThumbsUp, MessageCircle, Bookmark, Share2 } from 'lucide-react';
 import * as Tabs from '@radix-ui/react-tabs';
+import NavbarApp from '@/components/NavbarApp';
 import { KPICard } from '@/components/social-analytics/KPICard';
 import { MetricTile } from '@/components/social-analytics/MetricTile';
 import { PlatformSelector } from '@/components/social-analytics/PlatformSelector';
@@ -12,6 +13,7 @@ const generateSparklineData = () =>
 export default function SocialMediaAnalyticsPage() {
     return (
         <div className="min-h-screen bg-[#F8FAFC]">
+            <NavbarApp />
             {/* Container with max-width */}
             <div className="max-w-[1440px] mx-auto px-8 py-12">
                 {/* Header */}
