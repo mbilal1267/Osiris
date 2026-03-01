@@ -1,7 +1,7 @@
 {
-  "/creators/management/page": "app/creators/management/page.js",
-  "/campaigns/details/page": "app/campaigns/details/page.js",
-  "/(protected)/app/brand/campaigns/page": "app/(protected)/app/brand/campaigns/page.js",
-  "/(protected)/app/brand/page": "app/(protected)/app/brand/page.js",
-  "/(protected)/app/brand/creators/page": "app/(protected)/app/brand/creators/page.js"
+  "/brands/page": "app/brands/page.js",
+  "/page": "app/page.js",
+  "/auth/page": "app/auth/page.js",
+  "/creators/page": "app/creators/page.js",
+  "/api/auth/google/route": "app/api/auth/google/route.js"
 }
