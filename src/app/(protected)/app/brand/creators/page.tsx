@@ -86,7 +86,7 @@ export default function BrandCreatorDiscovery() {
             <div className="space-y-4">
               <div><label className="block text-sm font-medium mb-1">Campaign Brief</label><textarea value={brief} onChange={(e) => setBrief(e.target.value)} placeholder="Describe what you're looking for..." rows={4} className="w-full px-4 py-3 border border-gray-200 rounded-xl resize-none" /></div>
               <div><label className="block text-sm font-medium mb-1">Deliverables</label><input placeholder="e.g. 2 Reels + 3 Stories" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
-              <div><label className="block text-sm font-medium mb-1">Budget</label><input placeholder="$5,000" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
+              <div><label className="block text-sm font-medium mb-1">Budget</label><input placeholder="₹5,000" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setInviteModal(null)} className="flex-1 py-3 border border-gray-200 rounded-xl font-medium text-sm hover:bg-gray-50">Cancel</button>
                 <button onClick={sendInvite} className="flex-1 py-3 bg-brand text-white rounded-xl font-medium text-sm hover:bg-brand-dark flex items-center justify-center gap-2"><Send className="w-4 h-4" /> Send Invite</button>

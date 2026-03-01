@@ -4,6 +4,7 @@ import { campaigns } from "@/data/seed";
 import { TagPill, Toast } from "@/components/UIComponents";
 import { formatCurrency } from "@/lib/utils";
 import { Plus, X } from "lucide-react";
+import Link from "next/link";
 
 export default function BrandCampaigns() {
   const [showCreate, setShowCreate] = useState(false);
@@ -19,7 +20,7 @@ export default function BrandCampaigns() {
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {brandCampaigns.map((c) => (
-          <div key={c.id} className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md transition-shadow">
+          <Link href="/campaigns/details" key={c.id} className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md transition-shadow relative">
             <div className="flex items-start justify-between mb-3"><h3 className="font-bold text-lg">{c.name}</h3><TagPill label={c.status} type="status" /></div>
             <p className="text-sm text-gray-500 mb-4">{c.timeline}</p>
             <div className="grid grid-cols-2 gap-3 text-center">
@@ -27,7 +28,7 @@ export default function BrandCampaigns() {
               <div className="bg-gray-50 rounded-xl p-3"><p className="text-lg font-bold">{formatCurrency(c.budget)}</p><p className="text-xs text-gray-500">Budget</p></div>
             </div>
             <div className="flex gap-1 mt-4 flex-wrap">{c.goals.map((g) => <span key={g} className="text-xs bg-brand/5 text-brand px-2 py-0.5 rounded-full">{g}</span>)}</div>
-          </div>
+          </Link>
         ))}
       </div>
 
@@ -40,7 +41,7 @@ export default function BrandCampaigns() {
               <div><label className="block text-sm font-medium mb-1">Goals</label><input placeholder="Brand awareness, sales..." className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
               <div><label className="block text-sm font-medium mb-1">Deliverables</label><input placeholder="e.g. Instagram Reels + Stories" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="block text-sm font-medium mb-1">Budget</label><input placeholder="$10,000" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
+                <div><label className="block text-sm font-medium mb-1">Budget</label><input placeholder="₹10,000" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
                 <div><label className="block text-sm font-medium mb-1">Timeline</label><input placeholder="Jan - Mar 2026" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
               </div>
               <div className="flex gap-3 pt-2">

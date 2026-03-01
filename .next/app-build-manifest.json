@@ -21,6 +21,7 @@
       "static/chunks/main-app.js",
       "static/chunks/app/creators/page.js"
     ],
+<<<<<<< HEAD
     "/(protected)/app/brand/profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -66,10 +67,13 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(protected)/app/brand/page.js"
     ],
+=======
+>>>>>>> 2391d99f68b9d8524336994836b1428365b103c4
     "/auth/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/auth/page.js"
+<<<<<<< HEAD
     ],
     "/auth/signup/page": [
       "static/chunks/webpack.js",
@@ -80,6 +84,8 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/onboarding/brand/page.js"
+=======
+>>>>>>> 2391d99f68b9d8524336994836b1428365b103c4
     ]
   }
 }

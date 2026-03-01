@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/stores/auth";
 import { Eye, EyeOff } from "lucide-react";
 import { Toast } from "@/components/UIComponents";
+import GoogleButton from "@/components/GoogleButton";
 
 function SignupForm() {
   const params = useSearchParams();
@@ -65,13 +66,30 @@ function SignupForm() {
           </button>
           <p className="text-center text-sm text-gray-500">Already have an account? <Link href={`/auth/login?role=${role}`} className="underline font-medium text-black">Sign in</Link></p>
           <div className="flex items-center gap-4 my-2"><div className="flex-1 h-px bg-gray-200" /><span className="text-xs text-gray-400">or</span><div className="flex-1 h-px bg-gray-200" /></div>
-          <button type="button" onClick={() => setToast("Google signup coming soon")} className="w-full border border-gray-200 py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2 hover:bg-gray-50">🔵 Sign up with Google</button>
+          <GoogleButton text="Sign up with Google" />
           <button type="button" onClick={() => setToast("Apple signup coming soon")} className="w-full border border-gray-200 py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2 hover:bg-gray-50">🍎 Sign up with Apple</button>
           <p className="text-xs text-gray-400 text-center">By signing up, you agree to the <span className="underline">Terms &amp; Conditions</span> and <span className="underline">Privacy Policy</span>.</p>
         </form>
       </div>
       {toast && <Toast message={toast} onClose={() => setToast("")} />}
-    </div>
+      <div className="hidden lg:block bg-gradient-to-br from-brand via-neon-purple to-accent relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-80 h-96 rounded-[3rem] transform rotate-3 shadow-lg animate-float relative overflow-hidden bg-gradient-to-br from-neon-pink to-neon-purple p-1">
+            <div className="w-full h-full rounded-[2.8rem] overflow-hidden relative">
+              <video
+                className="absolute inset-0 w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
+                <source src="/videos/fitness_1.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div >
   );
 }
 

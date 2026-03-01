@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/stores/auth";
 import { Eye, EyeOff } from "lucide-react";
 import { Toast } from "@/components/UIComponents";
+import GoogleButton from "@/components/GoogleButton";
 
 function LoginForm() {
   const params = useSearchParams();
@@ -61,9 +62,7 @@ function LoginForm() {
             {loading ? "Signing in..." : "Continue"}
           </button>
           <div className="flex items-center gap-4 my-4"><div className="flex-1 h-px bg-gray-200" /><span className="text-xs text-gray-400">or</span><div className="flex-1 h-px bg-gray-200" /></div>
-          <button type="button" onClick={() => setToast("Google login coming soon")} className="w-full border border-gray-200 py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2 hover:bg-gray-50">
-            <span>🔵</span> Sign in with Google
-          </button>
+          <GoogleButton text="Sign in with Google" />
           <button type="button" onClick={() => setToast("Apple login coming soon")} className="w-full border border-gray-200 py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2 hover:bg-gray-50">
             <span>🍎</span> Sign in with Apple
           </button>
@@ -71,9 +70,21 @@ function LoginForm() {
         <p className="text-sm text-gray-500 mt-6">Don&apos;t have an account yet? <Link href={`/auth/signup?role=${role}`} className="underline font-medium text-black">Sign up here</Link></p>
         <p className="text-sm text-gray-500 mt-2">Demo credentials: <code className="bg-gray-100 px-2 py-0.5 rounded text-xs">creator@test.com</code> / <code className="bg-gray-100 px-2 py-0.5 rounded text-xs">brand@test.com</code> — password: <code className="bg-gray-100 px-2 py-0.5 rounded text-xs">password123</code></p>
       </div>
-      <div className="hidden lg:block bg-gradient-to-br from-amber-100 to-green-100 relative overflow-hidden">
+      <div className="hidden lg:block bg-gradient-to-br from-brand via-neon-purple to-accent relative overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-96 h-[500px] bg-emerald-200 rounded-[3rem] transform -rotate-3"></div>
+          <div className="w-80 h-96 rounded-[3rem] transform rotate-3 shadow-lg animate-float relative overflow-hidden bg-gradient-to-br from-neon-pink to-neon-purple p-1">
+            <div className="w-full h-full rounded-[2.8rem] overflow-hidden relative">
+              <video
+                className="absolute inset-0 w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
+                <source src="/videos/tech_1.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </div>
         </div>
       </div>
       {toast && <Toast message={toast} onClose={() => setToast("")} />}

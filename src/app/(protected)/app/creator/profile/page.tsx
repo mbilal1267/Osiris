@@ -69,7 +69,7 @@ export default function CreatorProfile() {
           <div className="bg-white rounded-2xl border border-gray-100 p-6">
             <h2 className="font-bold text-lg mb-4">Portfolio Gallery</h2>
             <div className="grid grid-cols-3 gap-3">
-              {[1,2,3,4,5,6].map((i) => (
+              {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="aspect-square bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 text-xs hover:bg-gray-200 transition-colors cursor-pointer">
                   {i <= 2 ? "Content" : "+ Add"}
                 </div>

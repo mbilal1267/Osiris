@@ -26,7 +26,9 @@ export default function BrandDashboard() {
         <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-brand text-white font-semibold text-sm px-5 py-3 rounded-xl hover:bg-brand-dark transition-colors"><Plus className="w-4 h-4" /> Create Campaign</button>
       </div>
       <div className="grid sm:grid-cols-3 gap-4 mb-8">
-        <StatCard label="Shortlisted Creators" value="12" icon={Users} />
+        <Link href="/creators/management" className="block relative">
+          <StatCard label="Shortlisted Creators" value="12" icon={Users} />
+        </Link>
         <StatCard label="Active Campaigns" value={String(brandCampaigns.filter((c) => c.status === "active").length)} icon={Megaphone} />
         <StatCard label="Spend This Month" value={formatCurrency(brandDeals.filter((d) => d.status === "active").reduce((s, d) => s + d.budget, 0))} icon={DollarSign} />
       </div>
@@ -59,7 +61,7 @@ export default function BrandDashboard() {
             <div className="space-y-4">
               <div><label className="block text-sm font-medium mb-1">Campaign name</label><input value={campaignName} onChange={(e) => setCampaignName(e.target.value)} placeholder="e.g. Summer Product Launch" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
               <div><label className="block text-sm font-medium mb-1">Goals</label><input placeholder="Brand awareness, sales..." className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
-              <div><label className="block text-sm font-medium mb-1">Budget</label><input placeholder="$10,000" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
+              <div><label className="block text-sm font-medium mb-1">Budget</label><input placeholder="₹10,000" className="w-full px-4 py-3 border border-gray-200 rounded-xl" /></div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-gray-200 rounded-xl font-medium text-sm hover:bg-gray-50">Cancel</button>
                 <button onClick={createCampaign} className="flex-1 py-3 bg-brand text-white rounded-xl font-medium text-sm hover:bg-brand-dark">Create</button>

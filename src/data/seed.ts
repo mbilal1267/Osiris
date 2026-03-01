@@ -10,11 +10,11 @@ export const creators = [
   { id: "9", name: "Mei Lin", handle: "meilinbeauty", email: "mei@example.com", avatar: "", bio: "K-beauty enthusiast & makeup artist. Glass skin is a lifestyle.", location: "Los Angeles, US", niches: ["Beauty", "Skincare"], platforms: { instagram: "@meilinbeauty", tiktok: "@meilinbeauty", youtube: "MeiLinBeauty" }, followers: 445000, engagement: 5.0, rates: { reel: 2000, short: 1300, story: 550, youtube: 4500 }, audience: { countries: ["US", "South Korea", "Japan"], ageRange: "18-34" }, portfolio: [], topContent: [{ title: "10-Step Korean Skincare Routine", views: 1900000, engagement: 5.5 }] },
   { id: "10", name: "Raj Malhotra", handle: "rajexplores", email: "raj@example.com", avatar: "", bio: "Travel photographer capturing untold stories. 40 countries and counting.", location: "Delhi, India", niches: ["Travel", "Photography"], platforms: { instagram: "@rajexplores", tiktok: "@rajexplores", youtube: "RajExploresWorld" }, followers: 560000, engagement: 3.8, rates: { reel: 2200, short: 1600, story: 650, youtube: 5500 }, audience: { countries: ["India", "US", "Germany"], ageRange: "25-44" }, portfolio: [], topContent: [{ title: "Hidden Gems of Rajasthan", views: 2800000, engagement: 4.3 }] },
   { id: "11", name: "Emma Wilson", handle: "emmawellness", email: "emma@example.com", avatar: "", bio: "Yoga instructor & mindfulness coach. Breathe, move, thrive.", location: "Sydney, Australia", niches: ["Wellness", "Fitness"], platforms: { instagram: "@emmawellness", tiktok: "@emmawellness", youtube: "" }, followers: 198000, engagement: 5.8, rates: { reel: 1100, short: 700, story: 350, youtube: 0 }, audience: { countries: ["Australia", "US", "UK"], ageRange: "25-44" }, portfolio: [], topContent: [{ title: "5-Minute Morning Meditation", views: 560000, engagement: 6.5 }] },
-  { id: "12", name: "Carlos Rivera", handle: "carlosgaming", email: "carlos@example.com", avatar: "", bio: "Pro gamer turned content creator. Streams, reviews, and honest takes on gaming culture.", location: "Mexico City, Mexico", niches: ["Gaming", "Tech"], platforms: { instagram: "@carlosgaming", tiktok: "@carlosgaming", youtube: "CarlosGamingMX" }, followers: 720000, engagement: 4.1, rates: { reel: 1800, short: 1200, story: 500, youtube: 4000 }, audience: { countries: ["Mexico", "US", "Spain"], ageRange: "18-34" }, portfolio: [], topContent: [{ title: "Best Gaming Setup Under $1000", views: 2400000, engagement: 4.6 }] },
+  { id: "12", name: "Carlos Rivera", handle: "carlosgaming", email: "carlos@example.com", avatar: "", bio: "Pro gamer turned content creator. Streams, reviews, and honest takes on gaming culture.", location: "Mexico City, Mexico", niches: ["Gaming", "Tech"], platforms: { instagram: "@carlosgaming", tiktok: "@carlosgaming", youtube: "CarlosGamingMX" }, followers: 720000, engagement: 4.1, rates: { reel: 1800, short: 1200, story: 500, youtube: 4000 }, audience: { countries: ["Mexico", "US", "Spain"], ageRange: "18-34" }, portfolio: [], topContent: [{ title: "Best Gaming Setup Under ₹1000", views: 2400000, engagement: 4.6 }] },
   { id: "13", name: "Zara Ahmed", handle: "zarastyle", email: "zara@example.com", avatar: "", bio: "Modest fashion content creator. Proving style has no limits.", location: "Dubai, UAE", niches: ["Fashion", "Lifestyle"], platforms: { instagram: "@zarastyle", tiktok: "@zarastyle", youtube: "ZaraStyleDubai" }, followers: 350000, engagement: 4.7, rates: { reel: 1600, short: 1100, story: 480, youtube: 3800 }, audience: { countries: ["UAE", "UK", "Saudi Arabia"], ageRange: "18-34" }, portfolio: [], topContent: [{ title: "Dubai Mall Outfit Challenge", views: 1100000, engagement: 5.2 }] },
   { id: "14", name: "Alex Thompson", handle: "alexoutdoors", email: "alex@example.com", avatar: "", bio: "Adventure photographer & hiking guide. The mountains are calling.", location: "Vancouver, Canada", niches: ["Travel", "Outdoors"], platforms: { instagram: "@alexoutdoors", tiktok: "@alexoutdoors", youtube: "AlexOutdoorsCA" }, followers: 230000, engagement: 5.5, rates: { reel: 1300, short: 850, story: 380, youtube: 3200 }, audience: { countries: ["Canada", "US", "Germany"], ageRange: "25-44" }, portfolio: [], topContent: [{ title: "Grouse Grind Speed Run", views: 680000, engagement: 6.0 }] },
   { id: "15", name: "Nina Kowalski", handle: "ninabakes", email: "nina@example.com", avatar: "", bio: "Pastry chef sharing baking secrets. From sourdough to macarons, one recipe at a time.", location: "Chicago, US", niches: ["Food", "Lifestyle"], platforms: { instagram: "@ninabakes", tiktok: "@ninabakes", youtube: "NinaBakesChicago" }, followers: 167000, engagement: 6.8, rates: { reel: 900, short: 600, story: 280, youtube: 2200 }, audience: { countries: ["US", "Canada", "UK"], ageRange: "25-44" }, portfolio: [], topContent: [{ title: "Perfect Croissant from Scratch", views: 520000, engagement: 7.5 }] },
-  { id: "16", name: "Olivia Park", handle: "oliviatravels", email: "olivia@example.com", avatar: "", bio: "Solo female traveler documenting budget-friendly adventures across Southeast Asia.", location: "Seoul, South Korea", niches: ["Travel", "Lifestyle"], platforms: { instagram: "@oliviatravels", tiktok: "@oliviatravels", youtube: "OliviaTravelsAsia" }, followers: 410000, engagement: 4.3, rates: { reel: 1700, short: 1100, story: 500, youtube: 4200 }, audience: { countries: ["South Korea", "Japan", "US"], ageRange: "18-34" }, portfolio: [], topContent: [{ title: "Bali on $30 a Day", views: 1600000, engagement: 4.9 }] },
+  { id: "16", name: "Olivia Park", handle: "oliviatravels", email: "olivia@example.com", avatar: "", bio: "Solo female traveler documenting budget-friendly adventures across Southeast Asia.", location: "Seoul, South Korea", niches: ["Travel", "Lifestyle"], platforms: { instagram: "@oliviatravels", tiktok: "@oliviatravels", youtube: "OliviaTravelsAsia" }, followers: 410000, engagement: 4.3, rates: { reel: 1700, short: 1100, story: 500, youtube: 4200 }, audience: { countries: ["South Korea", "Japan", "US"], ageRange: "18-34" }, portfolio: [], topContent: [{ title: "Bali on ₹30 a Day", views: 1600000, engagement: 4.9 }] },
   { id: "17", name: "Ryan Foster", handle: "ryanfitness", email: "ryan@example.com", avatar: "", bio: "Celebrity trainer sharing workouts that actually work. No gimmicks, just results.", location: "Los Angeles, US", niches: ["Fitness", "Health"], platforms: { instagram: "@ryanfitness", tiktok: "@ryanfitness", youtube: "RyanFitnessLA" }, followers: 890000, engagement: 3.4, rates: { reel: 3000, short: 2200, story: 800, youtube: 7000 }, audience: { countries: ["US", "UK", "Australia"], ageRange: "18-44" }, portfolio: [], topContent: [{ title: "Full Body HIIT 20 Minutes", views: 4500000, engagement: 3.9 }] },
   { id: "18", name: "Isabella Rossi", handle: "isabelladesigns", email: "isabella@example.com", avatar: "", bio: "Interior designer sharing space transformations and decor tips for small apartments.", location: "Milan, Italy", niches: ["Home", "Design"], platforms: { instagram: "@isabelladesigns", tiktok: "@isabelladesigns", youtube: "" }, followers: 275000, engagement: 5.1, rates: { reel: 1400, short: 900, story: 420, youtube: 0 }, audience: { countries: ["Italy", "US", "UK"], ageRange: "25-44" }, portfolio: [], topContent: [{ title: "Studio Apartment Makeover", views: 890000, engagement: 5.8 }] },
   { id: "19", name: "Nathan Wright", handle: "nathancodes", email: "nathan@example.com", avatar: "", bio: "Software engineer making coding accessible. From zero to deployed in 30 days.", location: "Berlin, Germany", niches: ["Tech", "Education"], platforms: { instagram: "@nathancodes", tiktok: "@nathancodes", youtube: "NathanCodesDaily" }, followers: 340000, engagement: 4.0, rates: { reel: 1500, short: 1000, story: 450, youtube: 3500 }, audience: { countries: ["Germany", "US", "India"], ageRange: "18-34" }, portfolio: [], topContent: [{ title: "Build a SaaS in a Weekend", views: 1300000, engagement: 4.4 }] },
@@ -54,6 +54,57 @@ export const campaigns = [
   { id: "c4", brandId: "6", name: "Spring Collection Preview", status: "completed", goals: ["Brand Awareness", "Sales"], deliverables: "Instagram Reels + Stories", budget: 12000, timeline: "Oct 2025 - Dec 2025", creatorsInvited: 4, creatorsAccepted: 4, createdAt: "2025-10-01" },
   { id: "c5", brandId: "5", name: "Plant-Based January", status: "active", goals: ["UGC", "Brand Awareness"], deliverables: "TikTok + Instagram", budget: 10000, timeline: "Jan 2026 - Feb 2026", creatorsInvited: 5, creatorsAccepted: 2, createdAt: "2025-12-15" },
   { id: "c6", brandId: "7", name: "Financial Wellness Series", status: "draft", goals: ["Brand Awareness", "App Downloads"], deliverables: "YouTube + Instagram Reels", budget: 25000, timeline: "Feb 2026 - May 2026", creatorsInvited: 3, creatorsAccepted: 0, createdAt: "2026-01-20" },
+];
+
+export const categories = [
+  {
+    name: "Beauty",
+    subCategories: ["Skincare", "Makeup", "Haircare", "Aesthetic Lifestyle Beauty", "Other"],
+  },
+  {
+    name: "Fashion",
+    subCategories: ["Women Fashion", "Mens Fashion", "Special Segments", "Other"],
+  },
+  {
+    name: "Tech",
+    subCategories: ["Consumer Tech", "Advanced Tech", "Gaming Tech", "Other"],
+  },
+  {
+    name: "Food",
+    subCategories: ["Basic Food Content", "Nutrition and Diet", "Food Review/Vlogging", "Other"],
+  },
+  {
+    name: "Fitness",
+    subCategories: ["Home Workouts", "Yoga", "Bodybuilding", "Calisthenics", "Other"],
+  },
+  {
+    name: "Health",
+    subCategories: ["General Health", "Medical Professionals", "Mental Health", "Other"],
+  },
+  {
+    name: "Travel",
+    subCategories: ["Vlogging", "Other"],
+  },
+  {
+    name: "Finance",
+    subCategories: ["Stock Market", "Personal Finance", "Trading", "Investing", "Other"],
+  },
+  {
+    name: "Gaming",
+    subCategories: ["Streaming", "Mobile", "PC", "Other"],
+  },
+  {
+    name: "Education",
+    subCategories: ["Academics", "Skill Based", "Career", "Other"],
+  },
+  {
+    name: "Home",
+    subCategories: ["Home Decor", "Home Improvement", "Lifestyle", "Other"],
+  },
+  {
+    name: "Entertainment",
+    subCategories: ["Pop Culture", "Comedy", "Celebrity", "Music", "Other"],
+  },
 ];
 
 export const mockUsers = [

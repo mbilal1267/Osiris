@@ -4,10 +4,10 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth";
 import OnboardingStepper from "@/components/OnboardingStepper";
 import Link from "next/link";
+import { categories } from "@/data/seed";
 
-const STEPS = ["Basics", "Platforms", "Niche", "Audience", "Rates", "Finish"];
-const NICHES = ["Fitness","Beauty","Tech","Food","Fashion","Finance","Travel","Wellness","Gaming","Education","Photography","Home","Lifestyle","Outdoors","Art","Sustainability"];
-const COUNTRIES = ["United States","United Kingdom","Canada","India","Australia","Germany","Brazil","France","Japan","Mexico","South Korea","Spain","Italy","UAE"];
+const STEPS = ["Basics", "Platforms", "Niche", "Rates", "Finish"];
+const COUNTRIES = ["United States", "United Kingdom", "Canada", "India", "Australia", "Germany", "Brazil", "France", "Japan", "Mexico", "South Korea", "Spain", "Italy", "UAE"];
 
 export default function CreatorOnboarding() {
   const [step, setStep] = useState(0);
@@ -16,8 +16,21 @@ export default function CreatorOnboarding() {
   const { user, setUser } = useAuthStore();
 
   const update = (key: string, val: any) => setData((d) => ({ ...d, [key]: val }));
-  const toggleNiche = (n: string) => update("niches", data.niches.includes(n) ? data.niches.filter((x: string) => x !== n) : [...data.niches, n]);
-  const toggleCountry = (c: string) => update("countries", data.countries.includes(c) ? data.countries.filter((x: string) => x !== c) : [...data.countries, c]);
+
+  const isStepValid = () => {
+    switch (step) {
+      case 0:
+        return data.name && data.phone && (data.email || user?.email);
+      case 1:
+        return true;
+      case 2:
+        return data.primaryNiche && data.secondaryNiche;
+      case 3:
+        return Object.values(data).some(v => typeof v === 'string' && v.trim());
+      default:
+        return true;
+    }
+  };
 
   const finish = () => {
     if (user) setUser({ ...user, onboarded: true });
@@ -36,9 +49,9 @@ export default function CreatorOnboarding() {
             <div className="space-y-4">
               <h2 className="font-display text-2xl font-bold">Tell us about yourself</h2>
               <p className="text-gray-500 text-sm">This helps brands find and connect with you.</p>
-              <div><label className="block text-sm font-medium mb-1">Full name</label><input value={data.name || ""} onChange={(e) => update("name", e.target.value)} placeholder="Your full name" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
-              <div><label className="block text-sm font-medium mb-1">Handle</label><input value={data.handle || ""} onChange={(e) => update("handle", e.target.value)} placeholder="@yourhandle" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
-              <div><label className="block text-sm font-medium mb-1">Email</label><input value={data.email || user?.email || ""} onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
+              <div><label className="block text-sm font-medium mb-1">Full name <span className="text-red-500">*</span></label><input value={data.name || ""} onChange={(e) => update("name", e.target.value)} placeholder="Your full name" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" required /></div>
+              <div><label className="block text-sm font-medium mb-1">Phone number <span className="text-red-500">*</span></label><input value={data.phone || ""} onChange={(e) => update("phone", e.target.value)} placeholder="Enter your phone number" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" required /></div>
+              <div><label className="block text-sm font-medium mb-1">Email <span className="text-red-500">*</span></label><input value={data.email || user?.email || ""} onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" required /></div>
               <div><label className="block text-sm font-medium mb-1">Location</label><input value={data.location || ""} onChange={(e) => update("location", e.target.value)} placeholder="City, Country" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
             </div>
           )}
@@ -47,52 +60,56 @@ export default function CreatorOnboarding() {
               <h2 className="font-display text-2xl font-bold">Connect your platforms</h2>
               <p className="text-gray-500 text-sm">Add your social media handles so brands can see your reach.</p>
               <div><label className="block text-sm font-medium mb-1">Instagram</label><input value={data.instagram || ""} onChange={(e) => update("instagram", e.target.value)} placeholder="@handle" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
-              <div><label className="block text-sm font-medium mb-1">TikTok</label><input value={data.tiktok || ""} onChange={(e) => update("tiktok", e.target.value)} placeholder="@handle" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
+              <div><label className="block text-sm font-medium mb-1">X (Twitter)</label><input value={data.x || ""} onChange={(e) => update("x", e.target.value)} placeholder="@handle" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
               <div><label className="block text-sm font-medium mb-1">YouTube</label><input value={data.youtube || ""} onChange={(e) => update("youtube", e.target.value)} placeholder="Channel name" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
+              <div><label className="block text-sm font-medium mb-1">Portfolio Photos</label><input value={data.portfolioPhotos || ""} onChange={(e) => update("portfolioPhotos", e.target.value)} placeholder="Comma-separated photo URLs" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
             </div>
           )}
           {step === 2 && (
             <div className="space-y-4">
               <h2 className="font-display text-2xl font-bold">Pick your niches</h2>
-              <p className="text-gray-500 text-sm">Select up to 5 categories that best describe your content.</p>
-              <div className="flex flex-wrap gap-2">
-                {NICHES.map((n) => (
-                  <button key={n} onClick={() => toggleNiche(n)} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${data.niches.includes(n) ? "bg-brand text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>{n}</button>
-                ))}
+              <p className="text-gray-500 text-sm">Select your primary and secondary niches that best describe your content.</p>
+              <div><label className="block text-sm font-medium mb-1">Primary niche <span className="text-red-500">*</span></label>
+                <select value={data.primaryNiche || ""} onChange={(e) => {
+                  update("primaryNiche", e.target.value);
+                  update("secondaryNiche", "");
+                }} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" required>
+                  <option value="">Select primary niche</option>{categories.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
+                </select>
               </div>
-              <p className="text-xs text-gray-400">{data.niches.length}/5 selected</p>
+              {data.primaryNiche && (
+                <div><label className="block text-sm font-medium mb-1">Secondary niche <span className="text-red-500">*</span></label>
+                  <select value={data.secondaryNiche || ""} onChange={(e) => update("secondaryNiche", e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" required>
+                    <option value="">Select secondary niche</option>{categories.find((c) => c.name === data.primaryNiche)?.subCategories.map((sc) => <option key={sc} value={sc}>{sc}</option>)}
+                  </select>
+                </div>
+              )}
             </div>
           )}
           {step === 3 && (
             <div className="space-y-4">
-              <h2 className="font-display text-2xl font-bold">Your audience</h2>
-              <p className="text-gray-500 text-sm">Help brands understand who follows you.</p>
-              <div><label className="block text-sm font-medium mb-2">Top countries (select up to 3)</label>
-                <div className="flex flex-wrap gap-2">{COUNTRIES.map((c) => (
-                  <button key={c} onClick={() => toggleCountry(c)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${data.countries.includes(c) ? "bg-brand text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>{c}</button>
-                ))}</div>
-              </div>
-              <div><label className="block text-sm font-medium mb-1">Primary age range</label>
-                <select value={data.ageRange || ""} onChange={(e) => update("ageRange", e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20">
-                  <option value="">Select age range</option><option value="13-17">13-17</option><option value="18-24">18-24</option><option value="25-34">25-34</option><option value="35-44">35-44</option><option value="45+">45+</option>
-                </select>
-              </div>
-            </div>
-          )}
-          {step === 4 && (
-            <div className="space-y-4">
-              <h2 className="font-display text-2xl font-bold">Set your rates</h2>
+              <h2 className="font-display text-2xl font-bold">Set your rates <span className="text-red-500">*</span></h2>
               <p className="text-gray-500 text-sm">Brands will see these when reviewing your profile. You can change them anytime.</p>
-              {["Instagram Reel", "TikTok / YT Short", "Instagram Story", "YouTube Integration"].map((type) => (
+              <div><label className="block text-sm font-medium mb-3">Convert your minimum charges to INR</label>
+                <div className="flex gap-2">
+                  <div className="flex-1"><label className="block text-xs text-gray-600 mb-1">Amount (USD)</label><input type="number" value={data.minChargesUSD || ""} onChange={(e) => {
+                    const val = parseFloat(e.target.value) || 0;
+                    update("minChargesUSD", e.target.value);
+                    update("minChargesINR", (val * 83).toFixed(2));
+                  }} placeholder="Enter amount" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/20" /></div>
+                  <div className="flex-1"><label className="block text-xs text-gray-600 mb-1">Amount (INR)</label><input type="text" value={data.minChargesINR || ""} disabled placeholder="Auto calculated" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50" /></div>
+                </div>
+              </div>
+              {["Instagram Reel", "X (Twitter)", "Instagram Story", "YouTube Integration"].map((type) => (
                 <div key={type}><label className="block text-sm font-medium mb-1">{type}</label>
-                  <div className="relative"><span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                  <div className="relative"><span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
                     <input type="number" value={data[type] || ""} onChange={(e) => update(type, e.target.value)} placeholder="0" className="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20" />
                   </div>
                 </div>
               ))}
             </div>
           )}
-          {step === 5 && (
+          {step === 4 && (
             <div className="text-center py-12">
               <div className="w-20 h-20 bg-green-100 rounded-full mx-auto flex items-center justify-center mb-6"><span className="text-4xl">🎉</span></div>
               <h2 className="font-display text-3xl font-bold mb-2">You&apos;re all set!</h2>
@@ -101,9 +118,13 @@ export default function CreatorOnboarding() {
           )}
         </div>
         <div className="flex justify-between mt-10">
-          {step > 0 && step < 5 && <button onClick={() => setStep(step - 1)} className="px-6 py-3 border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50">Back</button>}
-          {step < 5 ? (
-            <button onClick={() => setStep(step + 1)} className="ml-auto px-8 py-3 bg-black text-white font-semibold rounded-xl text-sm hover:bg-gray-800">Continue</button>
+          {step > 0 && <button onClick={() => setStep(step - 1)} className="px-6 py-3 border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50">Back</button>}
+          {step < 4 ? (
+            <button onClick={() => {
+              if (isStepValid()) {
+                setStep(step + 1);
+              }
+            }} disabled={!isStepValid()} className="ml-auto px-8 py-3 bg-black text-white font-semibold rounded-xl text-sm hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">Continue</button>
           ) : (
             <button onClick={finish} className="ml-auto px-8 py-3 bg-brand text-white font-semibold rounded-xl text-sm hover:bg-brand-dark">Go to Dashboard</button>
           )}
