@@ -1,7 +1,3 @@
 {
-  "/creators/management/page": "app/creators/management/page.js",
-  "/campaigns/details/page": "app/campaigns/details/page.js",
-  "/(protected)/app/brand/campaigns/page": "app/(protected)/app/brand/campaigns/page.js",
-  "/(protected)/app/brand/page": "app/(protected)/app/brand/page.js",
-  "/(protected)/app/brand/creators/page": "app/(protected)/app/brand/creators/page.js"
+  "/page": "app/page.js"
 }
