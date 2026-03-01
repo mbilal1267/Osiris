@@ -12,6 +12,19 @@ export default function CreatorProfile() {
   const creator = creators[0]; // mock: use first creator
   const [bio, setBio] = useState(creator.bio);
   const [toast, setToast] = useState("");
+  const [portfolio, setPortfolio] = useState<string[]>(creator.portfolio || []);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPortfolio([...portfolio, url]);
+    }
+  };
+
+  const removePhoto = (index: number) => {
+    setPortfolio(portfolio.filter((_, i) => i !== index));
+  };
 
   const save = () => setToast("Profile saved successfully!");
 
@@ -58,9 +71,12 @@ export default function CreatorProfile() {
             <h2 className="font-bold text-lg mb-4">Rate Card</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {Object.entries(creator.rates).filter(([_, v]) => v > 0).map(([type, rate]) => (
-                <div key={type} className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
-                  <span className="text-sm font-medium capitalize">{type}</span>
-                  <span className="font-bold">{formatCurrency(rate)}</span>
+                <div key={type} className="flex items-center gap-3">
+                  <span className="text-sm font-medium w-24 capitalize">{type}</span>
+                  <div className="relative flex-1">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                    <input defaultValue={rate} type="number" className="w-full pl-8 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20 text-sm font-semibold text-gray-900" />
+                  </div>
                 </div>
               ))}
             </div>
@@ -69,11 +85,32 @@ export default function CreatorProfile() {
           <div className="bg-white rounded-2xl border border-gray-100 p-6">
             <h2 className="font-bold text-lg mb-4">Portfolio Gallery</h2>
             <div className="grid grid-cols-3 gap-3">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="aspect-square bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 text-xs hover:bg-gray-200 transition-colors cursor-pointer">
-                  {i <= 2 ? "Content" : "+ Add"}
+              {portfolio.map((photo, i) => (
+                <div key={i} className="aspect-square rounded-xl overflow-hidden relative group bg-gray-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={photo} alt={`Portfolio ${i + 1}`} className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => removePhoto(i)}
+                    className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    ×
+                  </button>
                 </div>
               ))}
+              {portfolio.length < 6 && (
+                <div className="aspect-square bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors cursor-pointer relative">
+                  <span className="flex flex-col items-center gap-2">
+                    <span className="text-2xl">+</span>
+                    <span className="text-xs font-medium">Add Photo</span>
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

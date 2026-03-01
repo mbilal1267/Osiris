@@ -1,9 +1,9 @@
 "use client";
-import { StatCard, Toast } from "@/components/UIComponents";
-import { Users, TrendingUp, Eye, Download } from "lucide-react";
+import { Toast } from "@/components/UIComponents";
+import { TrendingUp, Download } from "lucide-react";
 import { useState } from "react";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import Link from "next/link";
+import { SocialMediaToolkit } from "@/components/social-analytics/SocialMediaToolkit";
 
 const followersData = [
   { month: "Aug", followers: 245000 }, { month: "Sep", followers: 258000 }, { month: "Oct", followers: 264000 }, { month: "Nov", followers: 271000 }, { month: "Dec", followers: 278000 }, { month: "Jan", followers: 284000 },
@@ -31,13 +31,7 @@ export default function CreatorInsights() {
         <button onClick={() => setToast("Export feature coming soon!")} className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50"><Download className="w-4 h-4" /> Export</button>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-4 mb-8">
-        <Link href="/analytics/social-media" className="block relative">
-          <StatCard label="Total Followers" value="284K" icon={Users} trend="+6K this month" />
-        </Link>
-        <StatCard label="Avg. Engagement" value="4.8%" icon={TrendingUp} trend="+0.2% vs last month" />
-        <StatCard label="Profile Views" value="12.4K" icon={Eye} trend="+18% this month" />
-      </div>
+      <SocialMediaToolkit />
 
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-2xl border border-gray-100 p-6">
