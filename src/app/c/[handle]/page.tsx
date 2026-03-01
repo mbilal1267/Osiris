@@ -29,7 +29,10 @@ export default function CreatorPublicProfile({ params }: { params: { handle: str
             <p className="mt-6 text-gray-600 max-w-2xl">{creator.bio}</p>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
-              <div className="bg-gray-50 rounded-xl p-4 text-center"><p className="text-2xl font-bold">{formatNumber(creator.followers)}</p><p className="text-xs text-gray-500">Followers</p></div>
+              <Link href="/analytics/social-media" className="bg-gray-50 rounded-xl p-4 text-center hover:bg-gray-100 transition-colors cursor-pointer group">
+                <p className="text-2xl font-bold group-hover:text-brand transition-colors">{formatNumber(creator.followers)}</p>
+                <p className="text-xs text-gray-500">Followers</p>
+              </Link>
               <div className="bg-gray-50 rounded-xl p-4 text-center"><p className="text-2xl font-bold">{creator.engagement}%</p><p className="text-xs text-gray-500">Engagement</p></div>
               <div className="bg-gray-50 rounded-xl p-4 text-center"><p className="text-2xl font-bold">{creator.niches.length}</p><p className="text-xs text-gray-500">Niches</p></div>
               <div className="bg-gray-50 rounded-xl p-4 text-center"><p className="text-2xl font-bold">{Object.values(creator.platforms).filter(Boolean).length}</p><p className="text-xs text-gray-500">Platforms</p></div>

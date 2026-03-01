@@ -3,15 +3,16 @@ import { StatCard, Toast } from "@/components/UIComponents";
 import { Users, TrendingUp, Eye, Download } from "lucide-react";
 import { useState } from "react";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import Link from "next/link";
 
 const followersData = [
-  { month: "Aug", followers: 245000 },{ month: "Sep", followers: 258000 },{ month: "Oct", followers: 264000 },{ month: "Nov", followers: 271000 },{ month: "Dec", followers: 278000 },{ month: "Jan", followers: 284000 },
+  { month: "Aug", followers: 245000 }, { month: "Sep", followers: 258000 }, { month: "Oct", followers: 264000 }, { month: "Nov", followers: 271000 }, { month: "Dec", followers: 278000 }, { month: "Jan", followers: 284000 },
 ];
 const engagementData = [
-  { month: "Aug", rate: 4.2 },{ month: "Sep", rate: 4.5 },{ month: "Oct", rate: 4.1 },{ month: "Nov", rate: 5.0 },{ month: "Dec", rate: 4.6 },{ month: "Jan", rate: 4.8 },
+  { month: "Aug", rate: 4.2 }, { month: "Sep", rate: 4.5 }, { month: "Oct", rate: 4.1 }, { month: "Nov", rate: 5.0 }, { month: "Dec", rate: 4.6 }, { month: "Jan", rate: 4.8 },
 ];
 const countryData = [
-  { name: "India", value: 42 },{ name: "US", value: 28 },{ name: "UK", value: 15 },{ name: "Canada", value: 8 },{ name: "Other", value: 7 },
+  { name: "India", value: 42 }, { name: "US", value: 28 }, { name: "UK", value: 15 }, { name: "Canada", value: 8 }, { name: "Other", value: 7 },
 ];
 const COLORS = ["#6C3CE1", "#D4E157", "#10B981", "#F59E0B", "#94A3B8"];
 const topContent = [
@@ -31,7 +32,9 @@ export default function CreatorInsights() {
       </div>
 
       <div className="grid sm:grid-cols-3 gap-4 mb-8">
-        <StatCard label="Total Followers" value="284K" icon={Users} trend="+6K this month" />
+        <Link href="/analytics/social-media" className="block relative">
+          <StatCard label="Total Followers" value="284K" icon={Users} trend="+6K this month" />
+        </Link>
         <StatCard label="Avg. Engagement" value="4.8%" icon={TrendingUp} trend="+0.2% vs last month" />
         <StatCard label="Profile Views" value="12.4K" icon={Eye} trend="+18% this month" />
       </div>

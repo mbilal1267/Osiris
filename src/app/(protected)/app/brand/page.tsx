@@ -26,7 +26,9 @@ export default function BrandDashboard() {
         <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-brand text-white font-semibold text-sm px-5 py-3 rounded-xl hover:bg-brand-dark transition-colors"><Plus className="w-4 h-4" /> Create Campaign</button>
       </div>
       <div className="grid sm:grid-cols-3 gap-4 mb-8">
-        <StatCard label="Shortlisted Creators" value="12" icon={Users} />
+        <Link href="/creators/management" className="block relative">
+          <StatCard label="Shortlisted Creators" value="12" icon={Users} />
+        </Link>
         <StatCard label="Active Campaigns" value={String(brandCampaigns.filter((c) => c.status === "active").length)} icon={Megaphone} />
         <StatCard label="Spend This Month" value={formatCurrency(brandDeals.filter((d) => d.status === "active").reduce((s, d) => s + d.budget, 0))} icon={DollarSign} />
       </div>
