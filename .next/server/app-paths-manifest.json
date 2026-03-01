@@ -1,3 +1,10 @@
 {
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/creators/page": "app/creators/page.js",
+  "/brands/page": "app/brands/page.js",
+  "/auth/page": "app/auth/page.js",
+  "/auth/signup/page": "app/auth/signup/page.js",
+  "/api/auth/signup/route": "app/api/auth/signup/route.js",
+  "/onboarding/brand/page": "app/onboarding/brand/page.js",
+  "/(protected)/app/brand/page": "app/(protected)/app/brand/page.js"
 }
