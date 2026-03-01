@@ -11,6 +11,21 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    "/privacy/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/privacy/page.js"
+=======
+<<<<<<< HEAD
+    "/auth/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/auth/login/page.js"
+    ],
+>>>>>>> 6dc9d9fcd7ab86023c87874f3c94df460f076792
     "/creators/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -34,6 +49,7 @@
     "/(protected)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
+<<<<<<< HEAD
       "static/chunks/app/(protected)/layout.js"
     ],
     "/(protected)/app/creator/profile/page": [
@@ -75,6 +91,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(protected)/app/brand/creators/page.js"
+=======
+      "static/chunks/app/creators/page.js"
+>>>>>>> ce607061fc55fbfd1ac1b1f5c561f0dd29adfcf8
+>>>>>>> 7d6f5f60c074080bbc76190292e1cad2ccc57e0d
+>>>>>>> 6dc9d9fcd7ab86023c87874f3c94df460f076792
     ]
   }
 }

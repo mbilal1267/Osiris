@@ -1,8 +1,8 @@
-import NavbarPublic from "@/components/NavbarPublic";
-import FooterMega from "@/components/FooterMega";
 import CTAStripYellow from "@/components/CTAStripYellow";
+import FooterMega from "@/components/FooterMega";
+import NavbarPublic from "@/components/NavbarPublic";
+import { CheckCircle, DollarSign, FileText, Handshake, Link2, MessageCircle, Star } from "lucide-react";
 import Link from "next/link";
-import { Star, Handshake, CheckCircle, DollarSign, Link2, MessageCircle, FileText } from "lucide-react";
 
 export default function CreatorsPage() {
   return (
@@ -121,7 +121,7 @@ export default function CreatorsPage() {
         <section className="py-20 bg-gradient-hero-dark text-white">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-display text-3xl sm:text-5xl font-bold">&ldquo;Osiris advocates for their creators... from making sure that we get paid fairly to hosting events that bring brands and creators together&rdquo;</h2>
-            <p className="mt-6 text-gray-300">Conor McKenzie — @conor_mckenzie</p>
+            <p className="mt-6 text-gray-300">Musharraf Abdullah</p>
           </div>
         </section>
 

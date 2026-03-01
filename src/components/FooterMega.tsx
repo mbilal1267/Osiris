@@ -1,6 +1,6 @@
 "use client";
+import { Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
 import Link from "next/link";
-import { Linkedin, Twitter, Instagram, Youtube } from "lucide-react";
 import { useState } from "react";
 
 export default function FooterMega() {
@@ -47,7 +47,7 @@ export default function FooterMega() {
             <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Legal & Policies</h4>
             <ul className="space-y-3 text-sm text-gray-300">
               <li><Link href="/terms-of-service" className="hover:text-white transition-smooth inline-block">Terms of Service</Link></li>
-              <li><span className="cursor-default hover:text-white transition-smooth inline-block">Privacy Policies</span></li>
+              <li><Link href="/privacy" className="hover:text-white transition-smooth inline-block">Privacy Policies</Link></li>
               <li><Link href="/cookie-notice" className="hover:text-white transition-smooth inline-block">Cookie Notice</Link></li>
               <li><Link href="/creator-terms-of-service" className="hover:text-white transition-smooth inline-block">Creator Terms of Service</Link></li>
             </ul>

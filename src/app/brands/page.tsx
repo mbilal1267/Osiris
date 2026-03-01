@@ -1,8 +1,8 @@
-import NavbarPublic from "@/components/NavbarPublic";
-import FooterMega from "@/components/FooterMega";
 import CTAStripYellow from "@/components/CTAStripYellow";
+import FooterMega from "@/components/FooterMega";
+import NavbarPublic from "@/components/NavbarPublic";
+import { BarChart3, Search, Star, Zap } from "lucide-react";
 import Link from "next/link";
-import { ArrowRight, Star, BarChart3, Search, Zap, Target } from "lucide-react";
 
 export default function BrandsPage() {
   return (
@@ -107,7 +107,7 @@ export default function BrandsPage() {
         <section className="py-20 bg-white">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight">&ldquo;Osiris brings something unique to the market. We saw the brand <span className="text-brand">grow more than 55%.</span>&rdquo;</h2>
-            <p className="mt-6 text-gray-500">Charlene Zapisocki, Brand Manager — Norwell</p>
+            <p className="mt-6 text-gray-500">Musharraf Abdullah</p>
           </div>
         </section>
 
