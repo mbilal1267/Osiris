@@ -1,6 +1,12 @@
 {
-<<<<<<< HEAD
   "/auth/page": "app/auth/page.js",
+<<<<<<< HEAD
+  "/onboarding/brand/page": "app/onboarding/brand/page.js",
+  "/(protected)/app/brand/profile/page": "app/(protected)/app/brand/profile/page.js",
+  "/(protected)/app/brand/page": "app/(protected)/app/brand/page.js",
+  "/(protected)/app/brand/creators/page": "app/(protected)/app/brand/creators/page.js",
+  "/(protected)/app/brand/campaigns/page": "app/(protected)/app/brand/campaigns/page.js"
+=======
   "/brands/page": "app/brands/page.js",
   "/creators/page": "app/creators/page.js",
   "/page": "app/page.js",
@@ -14,4 +20,5 @@
   "/creators/page": "app/creators/page.js"
 >>>>>>> ce607061fc55fbfd1ac1b1f5c561f0dd29adfcf8
 >>>>>>> 7d6f5f60c074080bbc76190292e1cad2ccc57e0d
+>>>>>>> 6dc9d9fcd7ab86023c87874f3c94df460f076792
 }
