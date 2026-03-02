@@ -1,8 +1,0 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/c/[handle]/page": "app/c/[handle]/page.js",
-  "/analytics/social-media/page": "app/analytics/social-media/page.js",
-  "/(protected)/app/creator/profile/page": "app/(protected)/app/creator/profile/page.js",
-  "/(protected)/app/creator/insights/page": "app/(protected)/app/creator/insights/page.js",
-  "/(protected)/app/creator/page": "app/(protected)/app/creator/page.js"
-}
