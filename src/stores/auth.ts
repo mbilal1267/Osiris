@@ -20,6 +20,19 @@ interface AuthState {
   setUser: (user: User) => void;
 }
 
+// ─── Cookie helpers (client-side, readable by middleware) ──────────────────
+function setCookie(name: string, value: string, days = 7) {
+  if (typeof document === "undefined") return;
+  const expires = new Date(Date.now() + days * 86_400_000).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+}
+
+function deleteCookie(name: string) {
+  if (typeof document === "undefined") return;
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
+// ──────────────────────────────────────────────────────────────────────────
+
 export const useAuthStore = create<AuthState>((set) => {
   let initialUser: User | null = null;
   let initialToken: string | null = null;
@@ -30,6 +43,9 @@ export const useAuthStore = create<AuthState>((set) => {
       if (stored && storedToken) {
         initialUser = JSON.parse(stored);
         initialToken = storedToken;
+        // Ensure cookies are also set (covers sessions restored from localStorage)
+        setCookie("osiris_token", storedToken);
+        setCookie("osiris_role", initialUser!.role);
       }
     } catch {}
   }
@@ -41,6 +57,9 @@ export const useAuthStore = create<AuthState>((set) => {
         localStorage.setItem("osiris_user", JSON.stringify(user));
         localStorage.setItem("osiris_token", token);
       }
+      // Set cookies for middleware
+      setCookie("osiris_token", token);
+      setCookie("osiris_role", user.role);
       set({ user, token });
     },
     logout: () => {
@@ -48,6 +67,9 @@ export const useAuthStore = create<AuthState>((set) => {
         localStorage.removeItem("osiris_user");
         localStorage.removeItem("osiris_token");
       }
+      // Clear cookies
+      deleteCookie("osiris_token");
+      deleteCookie("osiris_role");
       set({ user: null, token: null });
     },
     setUser: (user) => {
