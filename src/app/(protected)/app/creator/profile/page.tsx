@@ -11,7 +11,10 @@ export default function CreatorProfile() {
   const { user } = useAuthStore();
 
   // Resolve creator record from logged-in user's handle
-  const creator = creators.find((c) => c.handle === user?.handle) ?? creators[0];
+  const creator =
+    creators.find((c) => c.handle === user?.handle) ??
+    creators.find((c) => c.email === user?.email) ??
+    creators[0];
   const [bio, setBio] = useState(creator.bio);
   const [toast, setToast] = useState("");
   const [portfolio, setPortfolio] = useState<string[]>(creator.portfolio || []);
@@ -38,7 +41,7 @@ export default function CreatorProfile() {
       <div className="flex items-center justify-between mb-8">
         <h2 className="font-display text-3xl font-bold">Edit Profile</h2>
         <Link
-          href={`/c/${creator.handle}`}
+          href={`/app/creator/preview/${creator.handle}`}
           className="flex items-center gap-2 text-sm text-brand font-medium hover:underline"
         >
           Preview public profile <ExternalLink className="w-4 h-4" />
