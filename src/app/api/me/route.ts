@@ -1,21 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mockUsers } from "@/data/seed";
+import { fetchBackend } from "@/lib/apiBackend";
 
 export async function GET(req: NextRequest) {
-  // Read token from cookie (set by middleware-compatible auth flow)
-  const token = req.cookies.get("osiris_token")?.value;
+  try {
+    const role = req.cookies.get("osiris_role")?.value;
 
-  if (!token) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    const endpoint = role === "brand" ? "/brand/onboarding/brand-details" : "/creator/onboarding/me";
+    const backendRes = await fetchBackend(endpoint, {
+      method: "GET",
+    });
+
+    if (!backendRes.ok) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: backendRes.status });
+    }
+
+    const userData = await backendRes.json();
+    return NextResponse.json({ ...userData, role: role });
+  } catch (err) {
+    return NextResponse.json({ error: "Server Error" }, { status: 500 });
   }
-
-  // In the mock setup there's no real JWT decode; we infer user from request cookie
-  const role = req.cookies.get("osiris_role")?.value;
-
-  // Find first user matching the role as a best-effort mock
-  const user = mockUsers.find((u) => u.role === role) ?? mockUsers[0];
-  if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
-
-  const { password: _, ...safeUser } = user;
-  return NextResponse.json(safeUser);
 }
+
