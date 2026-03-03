@@ -12,6 +12,19 @@ export interface User {
   onboarded: boolean;
 }
 
+function normalizeUser(user: User): User {
+  if (user.role !== "creator") return user;
+
+  const fallbackFromEmail = user.email.split("@")[0].toLowerCase();
+  const candidate = (user.handle || "").trim();
+  const withoutDomain = candidate.includes("@") ? candidate.split("@")[0] : candidate;
+  const normalizedHandle = (withoutDomain || fallbackFromEmail)
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "");
+
+  return { ...user, handle: normalizedHandle || fallbackFromEmail };
+}
+
 interface AuthState {
   user: User | null;
   token: string | null;
@@ -41,7 +54,7 @@ export const useAuthStore = create<AuthState>((set) => {
       const stored = localStorage.getItem("osiris_user");
       const storedToken = localStorage.getItem("osiris_token");
       if (stored && storedToken) {
-        initialUser = JSON.parse(stored);
+        initialUser = normalizeUser(JSON.parse(stored) as User);
         initialToken = storedToken;
         // Ensure cookies are also set (covers sessions restored from localStorage)
         setCookie("osiris_token", storedToken);
@@ -53,14 +66,15 @@ export const useAuthStore = create<AuthState>((set) => {
     user: initialUser,
     token: initialToken,
     login: (user, token) => {
+      const normalizedUser = normalizeUser(user);
       if (typeof window !== "undefined") {
-        localStorage.setItem("osiris_user", JSON.stringify(user));
+        localStorage.setItem("osiris_user", JSON.stringify(normalizedUser));
         localStorage.setItem("osiris_token", token);
       }
       // Set cookies for middleware
       setCookie("osiris_token", token);
-      setCookie("osiris_role", user.role);
-      set({ user, token });
+      setCookie("osiris_role", normalizedUser.role);
+      set({ user: normalizedUser, token });
     },
     logout: () => {
       if (typeof window !== "undefined") {
@@ -73,10 +87,11 @@ export const useAuthStore = create<AuthState>((set) => {
       set({ user: null, token: null });
     },
     setUser: (user) => {
+      const normalizedUser = normalizeUser(user);
       if (typeof window !== "undefined") {
-        localStorage.setItem("osiris_user", JSON.stringify(user));
+        localStorage.setItem("osiris_user", JSON.stringify(normalizedUser));
       }
-      set({ user });
+      set({ user: normalizedUser });
     },
   };
 });

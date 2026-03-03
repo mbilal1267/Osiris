@@ -62,12 +62,16 @@ export async function GET(request: NextRequest) {
 
         // Construct a safe user object to pass back
         // Must match User interface in src/stores/auth.ts
+        const emailPrefix = (userData.email || "").split("@")[0]?.toLowerCase() || "creator";
+        const normalizedHandle = emailPrefix.replace(/[^a-z0-9._-]/g, "") || "creator";
         const safeUser = {
             id: userData.id,
             email: userData.email,
             name: userData.name,
             picture: userData.picture, // Not in interface but harmless
             role: state || "creator",
+            handle: (state || "creator") === "creator" ? normalizedHandle : undefined,
+            brandSlug: (state || "creator") === "brand" ? normalizedHandle : undefined,
             onboarded: false, // Default for new users
         };
 
