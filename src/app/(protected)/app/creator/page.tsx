@@ -1,16 +1,19 @@
 "use client";
-import { useAuthStore } from "@/stores/auth";
 import { StatCard, TagPill } from "@/components/UIComponents";
-import { Handshake, Clock, DollarSign, ArrowRight, User, BarChart3, Share2 } from "lucide-react";
-import Link from "next/link";
 import { creators, deals } from "@/data/seed";
 import { formatCurrency } from "@/lib/utils";
+import { useAuthStore } from "@/stores/auth";
+import { ArrowRight, BarChart3, Clock, DollarSign, Handshake, Share2, User } from "lucide-react";
+import Link from "next/link";
 
 export default function CreatorDashboard() {
   const { user } = useAuthStore();
 
   // Resolve logged-in creator record dynamically from handle
-  const creatorRecord = creators.find((c) => c.handle === user?.handle);
+  const creatorRecord =
+    creators.find((c) => c.handle === user?.handle) ??
+    creators.find((c) => c.email === user?.email) ??
+    creators[0];
   const myDeals = deals.filter((d) => d.creatorId === creatorRecord?.id);
   const activeDeals = myDeals.filter((d) => d.status === "active").length;
   const pendingDeals = myDeals.filter((d) => ["invited", "negotiating"].includes(d.status)).length;
@@ -37,7 +40,12 @@ export default function CreatorDashboard() {
         {[
           { label: "Complete profile", desc: "Add your portfolio and rates to attract more brands.", href: "/app/creator/profile", icon: User },
           { label: "View insights", desc: "See how your content is performing across platforms.", href: "/app/creator/insights", icon: BarChart3 },
-          { label: "Share public profile", desc: "Send your media kit link to potential brand partners.", href: `/c/${creatorRecord?.handle || user?.handle}`, icon: Share2 },
+          {
+            label: "Preview public profile",
+            desc: "See your media kit exactly how brands will view it.",
+            href: `/app/creator/preview/${creatorRecord.handle || user?.handle || ""}`,
+            icon: Share2,
+          },
         ].map((a) => (
           <Link
             key={a.href}
