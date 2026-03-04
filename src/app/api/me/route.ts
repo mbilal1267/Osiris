@@ -6,15 +6,14 @@ export async function GET(req: NextRequest) {
     const role = req.cookies.get("osiris_role")?.value;
 
     const endpoint = role === "brand" ? "/brand/onboarding/brand-details" : "/creator/onboarding/me";
-    const backendRes = await fetchBackend(endpoint, {
-      method: "GET",
-    });
-
-    if (!backendRes.ok) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: backendRes.status });
+    let backendRes;
+    try {
+      backendRes = await fetchBackend(endpoint, { method: "GET" });
+    } catch (error: any) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: error.response?.status || 500 });
     }
 
-    const userData = await backendRes.json();
+    const userData = backendRes.data;
     return NextResponse.json({ ...userData, role: role });
   } catch (err) {
     return NextResponse.json({ error: "Server Error" }, { status: 500 });

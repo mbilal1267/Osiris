@@ -54,7 +54,7 @@ export default function BrandCreatorDiscovery() {
             <tbody>{filtered.map((c) => (
               <tr key={c.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                 <td className="px-6 py-4">
-                  <Link href={`/c/${c.handle}`} className="flex items-center gap-3">
+                  <Link href={`/app/brand/creators/${c.handle}`} className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand text-xs font-bold shrink-0">{getInitials(c.name)}</div>
                     <div><p className="font-medium">{c.name}</p><p className="text-xs text-gray-400">@{c.handle} · {c.location}</p></div>
                   </Link>

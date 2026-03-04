@@ -2,10 +2,11 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore, decodeJwtToUser } from "@/stores/auth";
 import { Eye, EyeOff } from "lucide-react";
 import { Toast } from "@/components/UIComponents";
 import GoogleButton from "@/components/GoogleButton";
+import axios from "axios";
 
 function SignupForm() {
   const params = useSearchParams();
@@ -25,17 +26,29 @@ function SignupForm() {
     if (password.length < 10) { setError("Password must be at least 10 characters long."); return; }
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role, name: email.split("@")[0] }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setError(data.error || "Signup failed"); setLoading(false); return; }
-      login(data.user, data.token);
+      const res = await axios.post("/api/auth/signup", { email, password, role: role.toUpperCase() });
+      const data = res.data;
+
+      const token = data.osiris_token || data.token;
+      if (!token) { setError("Authentication failed (no token)"); setLoading(false); return; }
+
+      const user = decodeJwtToUser(token, role);
+      login(user, token);
+
       router.push(role === "creator" ? "/onboarding/creator" : "/onboarding/brand");
-    } catch { setError("Something went wrong."); }
-    setLoading(false);
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 409) {
+          setToast("An account with this email already exists. Please sign in instead.");
+        } else {
+          setError(err.response?.data?.error || err.response?.data?.message || "Signup failed");
+        }
+      } else {
+        setError("Something went wrong.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

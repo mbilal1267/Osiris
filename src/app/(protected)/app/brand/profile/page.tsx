@@ -12,7 +12,7 @@ export default function BrandProfile() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-display text-3xl font-bold">Brand Profile</h1>
-        <Link href={`/b/${brand.slug}`} className="flex items-center gap-2 text-sm text-brand font-medium hover:underline"><ExternalLink className="w-4 h-4" /> Preview public profile</Link>
+        <Link href={`/app/brand/preview/${brand.slug}`} className="flex items-center gap-2 text-sm text-brand font-medium hover:underline"><ExternalLink className="w-4 h-4" /> Preview public profile</Link>
       </div>
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">

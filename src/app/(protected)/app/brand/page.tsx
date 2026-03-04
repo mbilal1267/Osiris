@@ -88,7 +88,7 @@ export default function BrandDashboard() {
           </div>
           <div className="space-y-3">
             {creators.slice(0, 4).map((c) => (
-              <Link key={c.id} href={`/c/${c.handle}`} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50">
+              <Link key={c.id} href={`/app/brand/creators/${c.handle}`} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50">
                 <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand text-xs font-bold shrink-0">
                   {getInitials(c.name)}
                 </div>
