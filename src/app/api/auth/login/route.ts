@@ -1,36 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
+import axios from "axios";
 
 export async function POST(req: NextRequest) {
   try {
     const rawBody = await req.text();
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-    // Default to app logic mapping against backend login endpoint
-    const backendRes = await fetch(`${backendUrl}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: rawBody,
-    });
+    const bodyObj = JSON.parse(rawBody);
+    const { role: providedRole, ...backendPayload } = bodyObj;
 
-    const data = await backendRes.json();
-    if (!backendRes.ok) {
-      return NextResponse.json({ error: data.error || "Invalid credentials" }, { status: backendRes.status });
+    // Default to app logic mapping against backend login endpoint
+    let data;
+    try {
+      const backendRes = await axios.post(`${backendUrl}/auth/login`, backendPayload, {
+        headers: { "Content-Type": "application/json" }
+      });
+      data = backendRes.data;
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        const errorData = e.response?.data || { error: "Invalid credentials" };
+        return NextResponse.json(errorData, { status: e.response?.status || 500 });
+      }
+      throw e;
     }
 
-    const token = data.osiris_token || data.token;
+    const token = data.osiris_token || data.token || data.jwt;
 
-    // In actual auth, we might fetch user via GET /brand/onboarding/brand-details or creator equivalent here to populate context.
-    // For now, reconstruct role mock.
-    const bodyObj = JSON.parse(rawBody);
-    const mockUser = {
-      id: "u" + Date.now(),
-      email: bodyObj.email,
-      role: bodyObj.email.includes("brand") ? "brand" : "creator", // Fake fallback mock until actual profiles are merged
-      name: bodyObj.email.split("@")[0],
-      onboarded: false,
-    };
+    let role = providedRole?.toLowerCase() || "creator";
+    try {
+      if (token) {
+        const payloadBase64 = token.split(".")[1];
+        if (payloadBase64) {
+          const payload = JSON.parse(Buffer.from(payloadBase64, "base64").toString("utf-8"));
+          if (payload.role) {
+            role = payload.role.toLowerCase();
+          }
+        }
+      }
+    } catch (e) {
+      console.error("JWT Decode error in login:", e);
+    }
 
-    const res = NextResponse.json({ user: mockUser, token: token });
+    const res = NextResponse.json({ osiris_token: token });
 
     const COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
     res.cookies.set("osiris_token", token, {
@@ -39,7 +50,7 @@ export async function POST(req: NextRequest) {
       maxAge: COOKIE_MAX_AGE,
       sameSite: "lax",
     });
-    res.cookies.set("osiris_role", mockUser.role, {
+    res.cookies.set("osiris_role", role, {
       path: "/",
       httpOnly: false,
       maxAge: COOKIE_MAX_AGE,

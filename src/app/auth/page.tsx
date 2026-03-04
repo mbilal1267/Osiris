@@ -5,6 +5,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowRight, Star, AlertCircle, CheckCircle } from "lucide-react";
 import GoogleButton from "@/components/GoogleButton";
 import { useAuthStore } from "@/stores/auth";
+import { Toast } from "@/components/UIComponents";
+import axios from "axios";
 
 function AuthContent() {
   const params = useSearchParams();
@@ -16,6 +18,7 @@ function AuthContent() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
@@ -45,23 +48,14 @@ function AuthContent() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          role,
-          name: name || undefined,
-        }),
+      const response = await axios.post("/api/auth/signup", {
+        email,
+        password,
+        role,
+        name: name || undefined,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Signup failed");
-        return;
-      }
+      const data = response.data;
 
       // Persist user to auth store
       const { login } = useAuthStore.getState();
@@ -70,8 +64,16 @@ function AuthContent() {
       // Redirect to onboarding based on role
       const onboardingPath = role === "creator" ? "/onboarding/creator" : "/onboarding/brand";
       router.push(onboardingPath);
-    } catch (err) {
-      setError("An error occurred. Please try again.");
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 409) {
+          setToast("An account with this email already exists. Please sign in instead.");
+        } else {
+          setError(err.response?.data?.error || err.response?.data?.message || "Signup failed");
+        }
+      } else {
+        setError("An error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -88,24 +90,18 @@ function AuthContent() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Login failed");
-        return;
-      }
+      const response = await axios.post("/api/auth/login", { email, password });
+      const data = response.data;
 
       // Redirect to appropriate dashboard
       const dashPath = role === "creator" ? "/app/creator" : "/app/brand";
       router.push(dashPath);
-    } catch (err) {
-      setError("An error occurred. Please try again.");
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.error || "Login failed");
+      } else {
+        setError("An error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -332,6 +328,7 @@ function AuthContent() {
           </div>
         </div>
       </div>
+      {toast && <Toast message={toast} onClose={() => setToast("")} />}
     </div>
   );
 }

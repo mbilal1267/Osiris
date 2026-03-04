@@ -5,13 +5,11 @@ export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const searchParams = url.searchParams.toString();
 
-  const backendRes = await fetchBackend(`/creators${searchParams ? `?${searchParams}` : ''}`);
-
-  if (!backendRes.ok) {
-    return NextResponse.json({ error: "Creators search failed" }, { status: backendRes.status });
+  try {
+    const backendRes = await fetchBackend(`/creators${searchParams ? `?${searchParams}` : ''}`);
+    return NextResponse.json(backendRes.data);
+  } catch (error: any) {
+    return NextResponse.json({ error: "Creators search failed" }, { status: error.response?.status || 500 });
   }
-
-  const data = await backendRes.json();
-  return NextResponse.json(data);
 }
 

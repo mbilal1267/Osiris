@@ -1,40 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
+import axios from "axios";
 
 export async function POST(req: NextRequest) {
   try {
     const rawBody = await req.text();
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-    // forward raw request directly to Java/Spring real backend auth API
-    const backendRes = await fetch(`${backendUrl}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: rawBody,
-    });
+    const bodyObj = JSON.parse(rawBody);
 
-    const data = await backendRes.json();
-    if (!backendRes.ok) {
-      return NextResponse.json({ error: data.error || "Signup failed" }, { status: backendRes.status });
+    // forward raw request directly to Java/Spring real backend auth API
+    let data;
+    try {
+      const backendRes = await axios.post(`${backendUrl}/auth/register`, bodyObj, {
+        headers: { "Content-Type": "application/json" }
+      });
+      data = backendRes.data;
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        const errorMsg = e.response?.data?.message || e.response?.data?.error || "Signup failed";
+        return NextResponse.json({ error: errorMsg }, { status: e.response?.status || 500 });
+      }
+      throw e;
     }
 
-    // Docs specifies Response: { "osiris_token": "JWT_TOKEN" }
-    const token = data.osiris_token || data.token;
+    const token = data.osiris_token || data.token || data.jwt;
 
-    const bodyObj = JSON.parse(rawBody);
-    const role = bodyObj.role;
+    let role = bodyObj.role?.toLowerCase() || "creator";
 
-    // Simulate backend user object for frontend zustand store (frontend expects user context)
-    const mockUser = {
-      id: "u" + Date.now(),
-      email: bodyObj.email,
-      role: role,
-      name: bodyObj.name || bodyObj.email.split("@")[0],
-      handle: role === "creator" ? bodyObj.email.split("@")[0].toLowerCase() : undefined,
-      brandSlug: role === "brand" ? bodyObj.email.split("@")[0].toLowerCase() : undefined,
-      onboarded: false,
-    };
+    try {
+      if (token) {
+        const payloadBase64 = token.split(".")[1];
+        if (payloadBase64) {
+          const payload = JSON.parse(Buffer.from(payloadBase64, "base64").toString("utf-8"));
+          if (payload.role) {
+            role = payload.role.toLowerCase();
+          }
+        }
+      }
+    } catch (e) {
+      console.error("JWT Decode error in signup:", e);
+    }
 
-    const res = NextResponse.json({ user: mockUser, token: token }, { status: 201 });
+    const res = NextResponse.json({ osiris_token: token }, { status: 201 });
 
     const COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
     res.cookies.set("osiris_token", token, {
@@ -43,14 +50,13 @@ export async function POST(req: NextRequest) {
       maxAge: COOKIE_MAX_AGE,
       sameSite: "lax",
     });
-    if (role) {
-      res.cookies.set("osiris_role", role, {
-        path: "/",
-        httpOnly: false,
-        maxAge: COOKIE_MAX_AGE,
-        sameSite: "lax",
-      });
-    }
+
+    res.cookies.set("osiris_role", role, {
+      path: "/",
+      httpOnly: false,
+      maxAge: COOKIE_MAX_AGE,
+      sameSite: "lax",
+    });
 
     return res;
   } catch (error) {
