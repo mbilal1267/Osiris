@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
     try {
       backendRes = await fetchBackend(endpoint, { method: "GET" });
     } catch (error: any) {
+      console.log(error);
       return NextResponse.json({ error: "Not authenticated" }, { status: error.response?.status || 500 });
     }
 

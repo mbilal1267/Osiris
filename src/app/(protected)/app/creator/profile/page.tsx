@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { creators } from "@/data/seed";
 import { TagPill, Toast } from "@/components/UIComponents";
@@ -11,13 +12,52 @@ export default function CreatorProfile() {
   const { user } = useAuthStore();
 
   // Resolve creator record from logged-in user's handle
-  const creator =
+  const [creator, setCreator] = useState(
     creators.find((c) => c.handle === user?.handle) ??
     creators.find((c) => c.email === user?.email) ??
-    creators[0];
+    creators[0]
+  );
   const [bio, setBio] = useState(creator.bio);
   const [toast, setToast] = useState("");
   const [portfolio, setPortfolio] = useState<string[]>(creator.portfolio || []);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axios.get("/api/me");
+        if (response.data && !response.data.error) {
+          const d = response.data;
+          setCreator((prev) => ({
+            ...prev,
+            name: d.name || prev.name,
+            email: d.email || prev.email,
+            location: d.location || prev.location,
+            niches: [d.primaryNiche, d.secondaryNiche].filter(Boolean) as string[] || prev.niches,
+            platforms: {
+              ...prev.platforms,
+              instagram: d.instagram || prev.platforms.instagram,
+              youtube: d.youtube || prev.platforms.youtube,
+              tiktok: d.tiktok || prev.platforms.tiktok,
+            } as any, // Cast to any to avoid strict type error if we add twitter dynamically
+            rates: {
+              ...prev.rates,
+              reel: d.instagramReel || prev.rates.reel,
+              short: d.ytShort || prev.rates.short,
+              story: d.instagramStory || prev.rates.story,
+              youtube: d.youtubeIntegration || prev.rates.youtube,
+            } as any
+          }));
+
+          if (d.portfolioPhotos) {
+            setPortfolio(Array.isArray(d.portfolioPhotos) ? d.portfolioPhotos : d.portfolioPhotos.split(","));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch creator profile:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

@@ -35,7 +35,10 @@ function SignupForm() {
       const user = decodeJwtToUser(token, role);
       login(user, token);
 
-      router.push(role === "creator" ? "/onboarding/creator" : "/onboarding/brand");
+      setToast("Account created successfully!");
+      setTimeout(() => {
+        window.location.href = role === "creator" ? "/onboarding/creator" : "/onboarding/brand";
+      }, 1500);
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 409) {

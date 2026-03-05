@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowRight, Star, AlertCircle, CheckCircle } from "lucide-react";
 import GoogleButton from "@/components/GoogleButton";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore, decodeJwtToUser } from "@/stores/auth";
 import { Toast } from "@/components/UIComponents";
 import axios from "axios";
 
@@ -51,19 +51,22 @@ function AuthContent() {
       const response = await axios.post("/api/auth/signup", {
         email,
         password,
-        role,
+        role: role?.toUpperCase(),
         name: name || undefined,
       });
 
       const data = response.data;
+      const token = data.osiris_token || data.token;
+      if (!token) throw new Error("Authentication failed (no token)");
 
       // Persist user to auth store
       const { login } = useAuthStore.getState();
-      login(data.user, data.token);
+      const user = decodeJwtToUser(token, role || "creator");
+      login(user, token);
 
-      // Redirect to onboarding based on role
+      // Redirect to onboarding based on role (hard redirect to clear client cache)
       const onboardingPath = role === "creator" ? "/onboarding/creator" : "/onboarding/brand";
-      router.push(onboardingPath);
+      window.location.href = onboardingPath;
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 409) {
@@ -90,12 +93,18 @@ function AuthContent() {
 
     setLoading(true);
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
+      const response = await axios.post("/api/auth/login", { email, password, role });
       const data = response.data;
+      const token = data.osiris_token || data.token;
+      if (!token) throw new Error("Authentication failed (no token)");
 
-      // Redirect to appropriate dashboard
+      const { login } = useAuthStore.getState();
+      const user = decodeJwtToUser(token, role || "creator");
+      login(user, token);
+
+      // Redirect to appropriate dashboard (hard redirect to bypass Next.js router cache of the middleware redirect)
       const dashPath = role === "creator" ? "/app/creator" : "/app/brand";
-      router.push(dashPath);
+      window.location.href = dashPath;
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.error || "Login failed");
