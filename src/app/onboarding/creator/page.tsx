@@ -5,6 +5,8 @@ import { useAuthStore } from "@/stores/auth";
 import OnboardingStepper from "@/components/OnboardingStepper";
 import Link from "next/link";
 import { categories } from "@/data/seed";
+import axios from "axios";
+import { Toast } from "@/components/UIComponents";
 
 const STEPS = ["Basics", "Platforms", "Niche", "Rates", "Finish"];
 const COUNTRIES = ["United States", "United Kingdom", "Canada", "India", "Australia", "Germany", "Brazil", "France", "Japan", "Mexico", "South Korea", "Spain", "Italy", "UAE"];
@@ -12,6 +14,8 @@ const COUNTRIES = ["United States", "United Kingdom", "Canada", "India", "Austra
 export default function CreatorOnboarding() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<Record<string, any>>({ niches: [], countries: [] });
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState("");
   const router = useRouter();
   const { user, setUser } = useAuthStore();
 
@@ -32,9 +36,61 @@ export default function CreatorOnboarding() {
     }
   };
 
-  const finish = () => {
-    if (user) setUser({ ...user, onboarded: true });
-    router.push("/app/creator");
+  const handleNext = async () => {
+    if (!isStepValid()) return;
+    setLoading(true);
+    setToast("");
+
+    try {
+      if (step === 0) {
+        await axios.post("/api/creator/onboarding/step1", {
+          name: data.name,
+          phoneNumber: data.phone,
+          email: data.email || user?.email,
+          location: data.location,
+        });
+      } else if (step === 1) {
+        await axios.post("/api/creator/onboarding/step2", {
+          instagram: data.instagram,
+          twitter: data.x,
+          youtube: data.youtube,
+          portfolioPhotos: data.portfolioPhotos,
+        });
+      } else if (step === 2) {
+        await axios.post("/api/creator/onboarding/step3", {
+          primaryNiche: data.primaryNiche,
+          secondaryNiche: data.secondaryNiche,
+        });
+      } else if (step === 3) {
+        await axios.post("/api/creator/onboarding/step5", {
+          instagramReel: parseFloat(data["Instagram Reel"]) || 0,
+          instagramPost: parseFloat(data["Instagram Post"]) || 0,
+          ytShort: parseFloat(data["YouTube Short"]) || 0,
+          instagramStory: parseFloat(data["Instagram Story"]) || 0,
+          youtubeIntegration: parseFloat(data["YouTube Integration"]) || 0,
+          amount: parseFloat(data.minChargesUSD) || 0,
+        });
+      }
+      setStep(step + 1);
+    } catch (error: any) {
+      console.error("Failed to save step data:", error);
+      setToast(error.response?.data?.error || "Failed to save information.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const finish = async () => {
+    setLoading(true);
+    try {
+      await axios.put("/api/creator/onboarding/finish");
+      if (user) setUser({ ...user, onboarded: true });
+      window.location.href = "/app/creator";
+    } catch (error) {
+      console.error("Failed to finish onboarding:", error);
+      setToast("Failed to complete onboarding.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -118,18 +174,19 @@ export default function CreatorOnboarding() {
           )}
         </div>
         <div className="flex justify-between mt-10">
-          {step > 0 && <button onClick={() => setStep(step - 1)} className="px-6 py-3 border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50">Back</button>}
+          {step > 0 && <button onClick={() => setStep(step - 1)} disabled={loading} className="px-6 py-3 border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50 disabled:opacity-50">Back</button>}
           {step < 4 ? (
-            <button onClick={() => {
-              if (isStepValid()) {
-                setStep(step + 1);
-              }
-            }} disabled={!isStepValid()} className="ml-auto px-8 py-3 bg-black text-white font-semibold rounded-xl text-sm hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">Continue</button>
+            <button onClick={handleNext} disabled={!isStepValid() || loading} className="ml-auto px-8 py-3 bg-black text-white font-semibold rounded-xl text-sm hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+              {loading ? "Saving..." : "Continue"}
+            </button>
           ) : (
-            <button onClick={finish} className="ml-auto px-8 py-3 bg-brand text-white font-semibold rounded-xl text-sm hover:bg-brand-dark">Go to Dashboard</button>
+            <button onClick={finish} disabled={loading} className="ml-auto px-8 py-3 bg-brand text-white font-semibold rounded-xl text-sm hover:bg-brand-dark disabled:opacity-50">
+              {loading ? "Finishing..." : "Go to Dashboard"}
+            </button>
           )}
         </div>
       </div>
+      {toast && <Toast message={toast} onClose={() => setToast("")} />}
     </div>
   );
 }

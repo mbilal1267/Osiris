@@ -17,8 +17,13 @@ export async function POST(req: NextRequest) {
       data = backendRes.data;
     } catch (e: any) {
       if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+        if (status === 401) {
+          // Backend returns 401 for duplicate email on register
+          return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+        }
         const errorMsg = e.response?.data?.message || e.response?.data?.error || "Signup failed";
-        return NextResponse.json({ error: errorMsg }, { status: e.response?.status || 500 });
+        return NextResponse.json({ error: errorMsg }, { status: status || 500 });
       }
       throw e;
     }

@@ -33,8 +33,7 @@ function LoginForm() {
 
       const user = decodeJwtToUser(token, role);
       login(user, token);
-
-      router.push(user.role === "creator" ? "/app/creator" : "/app/brand");
+      window.location.href = user.role === "creator" ? "/app/creator" : "/app/brand";
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.error || "Invalid credentials");

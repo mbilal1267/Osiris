@@ -11,10 +11,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const [ready, setReady] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+
     if (!user) {
-      router.push("/auth?tab=login");
+      router.push("/auth?tab=login&reason=layout_no_user");
       return;
     }
     if (user.role === "creator" && pathname.startsWith("/app/brand")) {
@@ -26,7 +33,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       return;
     }
     setReady(true);
-  }, [user, pathname, router]);
+  }, [user, pathname, router, hydrated]);
 
   // Close sidebar on route change (mobile)
   useEffect(() => {

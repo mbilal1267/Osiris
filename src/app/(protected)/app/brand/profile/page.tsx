@@ -1,13 +1,37 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { brands } from "@/data/seed";
 import { Toast } from "@/components/UIComponents";
 import { Save, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
 export default function BrandProfile() {
-  const brand = brands[0];
+  const [brand, setBrand] = useState(brands[0]);
   const [toast, setToast] = useState("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axios.get("/api/me");
+        if (response.data && !response.data.error) {
+          const d = response.data;
+          setBrand((prev) => ({
+            ...prev,
+            name: d.businessName || prev.name,
+            description: d.brandDescription || prev.description,
+            website: d.website || prev.website,
+            categories: [d.primaryNiche, d.secondaryNiche].filter(Boolean) as string[] || prev.categories,
+            markets: d.targetMarkets || prev.markets,
+          }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch brand profile:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">

@@ -13,6 +13,7 @@ export function middleware(req: NextRequest) {
     const url = req.nextUrl.clone();
     url.pathname = "/auth";
     url.searchParams.set("tab", "login");
+    url.searchParams.set("reason", "middleware_no_token");
     return NextResponse.redirect(url);
   }
 
