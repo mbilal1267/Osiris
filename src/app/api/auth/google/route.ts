@@ -10,6 +10,6 @@ export async function GET(request: NextRequest) {
     // redirect to the actual backend oauth endpoint
     const searchParams = request.nextUrl.searchParams;
     const role = searchParams.get("role") || "creator";
-    const url = `${backendUrl}/oauth2/authorization/google?role=${role}`;
+    const url = `${backendUrl}/oauth2/authorization/google?role=${role.toUpperCase()}`;
     return NextResponse.redirect(url);
 }

@@ -1,13 +1,28 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { brands } from "@/data/seed";
 import { Toast } from "@/components/UIComponents";
 import { Save, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { useAuthStore } from "@/stores/auth";
 
 export default function BrandProfile() {
-  const [brand, setBrand] = useState(brands[0]);
+  const { user } = useAuthStore();
+  const [brand, setBrand] = useState<{
+    name: string;
+    description: string;
+    website: string;
+    categories: string[];
+    markets: string[];
+    slug: string;
+  }>({
+    name: "",
+    description: "",
+    website: "",
+    categories: [],
+    markets: [],
+    slug: user?.brandSlug || "",
+  });
   const [toast, setToast] = useState("");
 
   useEffect(() => {
@@ -18,6 +33,7 @@ export default function BrandProfile() {
           const d = response.data;
           setBrand((prev) => ({
             ...prev,
+            slug: d.slug || d.brandSlug || user?.brandSlug || prev.slug,
             name: d.businessName || prev.name,
             description: d.brandDescription || prev.description,
             website: d.website || prev.website,
@@ -36,7 +52,13 @@ export default function BrandProfile() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-display text-3xl font-bold">Brand Profile</h1>
-        <Link href={`/app/brand/preview/${brand.slug}`} className="flex items-center gap-2 text-sm text-brand font-medium hover:underline"><ExternalLink className="w-4 h-4" /> Preview public profile</Link>
+        <Link
+          href={brand?.slug ? `/app/brand/preview/${brand.slug}` : "#"}
+          className={`flex items-center gap-2 text-sm font-medium ${brand?.slug ? 'text-brand hover:underline' : 'text-gray-400 cursor-not-allowed'}`}
+          onClick={(e) => !brand?.slug && e.preventDefault()}
+        >
+          <ExternalLink className="w-4 h-4" /> Preview public profile
+        </Link>
       </div>
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">

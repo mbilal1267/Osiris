@@ -7,16 +7,17 @@ export async function POST(req: NextRequest) {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const bodyObj = JSON.parse(rawBody);
-    const { role: providedRole, ...backendPayload } = bodyObj;
+    const providedRole = bodyObj.role.toUpperCase();
 
     // Default to app logic mapping against backend login endpoint
     let data;
     try {
-      const backendRes = await axios.post(`${backendUrl}/auth/login`, backendPayload, {
+      const backendRes = await axios.post(`${backendUrl}/auth/login`, bodyObj, {
         headers: { "Content-Type": "application/json" }
       });
       data = backendRes.data;
     } catch (e: any) {
+      console.log(e);
       if (axios.isAxiosError(e)) {
         const errorData = e.response?.data || { error: "Invalid credentials" };
         return NextResponse.json(errorData, { status: e.response?.status || 500 });
