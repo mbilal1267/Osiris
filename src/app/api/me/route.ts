@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   try {
     const role = req.cookies.get("osiris_role")?.value;
 
-    const endpoint = role === "brand" ? "/brand/onboarding/brand-details" : "/creator/onboarding/me";
+    const endpoint = role === "brand" ? "/brand/onboarding/me" : "/creator/onboarding/me";
     let backendRes;
     try {
       backendRes = await fetchBackend(endpoint, { method: "GET" });
@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
     }
 
     const userData = backendRes.data;
+    console.log(userData);
     return NextResponse.json({ ...userData, role: role });
   } catch (err) {
     return NextResponse.json({ error: "Server Error" }, { status: 500 });

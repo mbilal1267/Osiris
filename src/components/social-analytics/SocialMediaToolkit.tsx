@@ -5,10 +5,14 @@ import { KPICard } from '@/components/social-analytics/KPICard';
 import { MetricTile } from '@/components/social-analytics/MetricTile';
 import { PlatformSelector } from '@/components/social-analytics/PlatformSelector';
 
-const generateSparklineData = () =>
-    Array.from({ length: 7 }, (_, i) => ({ value: Math.random() * 100 + 50 }));
+export function SocialMediaToolkit({ creator }: { creator?: any }) {
+    // Fallback numbers if creator data is missing
+    const followersText = creator?.followers ? (creator.followers >= 1000 ? (creator.followers / 1000).toFixed(1) + 'K' : String(creator.followers)) : "0";
+    const engagementText = creator?.engagement ? `${creator.engagement}%` : "0%";
+    const reachText = creator?.followers ? (creator.followers * 1.5 >= 1000 ? ((creator.followers * 1.5) / 1000).toFixed(1) + 'K' : String(Math.floor(creator.followers * 1.5))) : "0";
+    // We remove generateSparklineData entirely so KPICard no longer shows fake lines
+    const avgViews = creator?.views ? (creator.views >= 1000 ? (creator.views / 1000).toFixed(1) + 'K' : String(creator.views)) : "N/A";
 
-export function SocialMediaToolkit() {
     return (
         <div className="bg-white rounded-2xl border border-gray-100 p-6 sm:p-8 shadow-sm mb-8 overflow-hidden">
             <header className="mb-8">
@@ -75,16 +79,16 @@ export function SocialMediaToolkit() {
                         </div>
 
                         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-                            <KPICard title="Followers Growth" value="12.5K" trend="up" trendValue="+8.2%" sparklineData={generateSparklineData()} />
-                            <KPICard title="Engagement Rate" value="4.8%" trend="up" trendValue="+2.1%" sparklineData={generateSparklineData()} />
-                            <KPICard title="Avg Views" value="8.2K" trend="up" trendValue="+5.3%" sparklineData={generateSparklineData()} />
-                            <KPICard title="Audience Quality Score" value="8.7/10" sparklineData={generateSparklineData()} />
-                            <KPICard title="Top Country" value="USA" trend="up" trendValue="42%" />
-                            <KPICard title="Brand Safety Score" value="9.2/10" sparklineData={generateSparklineData()} />
-                            <KPICard title="Followers Retention Rate" value="92.4%" trend="up" trendValue="+1.8%" sparklineData={generateSparklineData()} />
-                            <KPICard title="Total Reach" value="156K" trend="up" trendValue="+12%" sparklineData={generateSparklineData()} />
-                            <KPICard title="Profile Visits" value="24.3K" trend="up" trendValue="+6.5%" sparklineData={generateSparklineData()} />
-                            <KPICard title="Save Rate" value="3.2%" trend="up" trendValue="+0.9%" sparklineData={generateSparklineData()} />
+                            <KPICard title="Followers Growth" value={followersText} />
+                            <KPICard title="Engagement Rate" value={engagementText} />
+                            <KPICard title="Avg Views" value={avgViews} />
+                            <KPICard title="Reliability Score" value={creator?.reliabilityScore ? `${creator.reliabilityScore}%` : "N/A"} />
+                            <KPICard title="Top Country" value={creator?.location?.split(',')[0] || "Global"} />
+                            <KPICard title="Brand Safety Score" value="N/A" />
+                            <KPICard title="Followers Retention Rate" value="N/A" />
+                            <KPICard title="Total Reach" value={reachText} />
+                            <KPICard title="Profile Visits" value="N/A" />
+                            <KPICard title="Save Rate" value="N/A" />
                         </div>
                     </section>
                 </Tabs.Content>
@@ -100,23 +104,23 @@ export function SocialMediaToolkit() {
                             <div className="flex min-w-max divide-x divide-[#E2E8F0]">
                                 <div className="p-6 text-center w-48 shrink-0">
                                     <p className="text-sm text-slate-600 mb-2">Total Followers</p>
-                                    <p className="text-3xl font-bold text-slate-900">125.4K</p>
+                                    <p className="text-3xl font-bold text-slate-900">{followersText}</p>
                                 </div>
                                 <div className="p-6 text-center w-48 shrink-0">
                                     <p className="text-sm text-slate-600 mb-2">30-day Follows Growth</p>
-                                    <p className="text-3xl font-bold text-[#10B981]">+12.5%</p>
+                                    <p className="text-3xl font-bold text-gray-400">N/A</p>
                                 </div>
                                 <div className="p-6 text-center w-48 shrink-0">
                                     <p className="text-sm text-slate-600 mb-2">Net Follows Gain</p>
-                                    <p className="text-3xl font-bold text-slate-900">+8,234</p>
+                                    <p className="text-3xl font-bold text-gray-400">N/A</p>
                                 </div>
                                 <div className="p-6 text-center w-48 shrink-0">
                                     <p className="text-sm text-slate-600 mb-2">Followers Retention Rate</p>
-                                    <p className="text-3xl font-bold text-slate-900">92.4%</p>
+                                    <p className="text-3xl font-bold text-gray-400">N/A</p>
                                 </div>
                                 <div className="p-6 text-center w-48 shrink-0">
                                     <p className="text-sm text-slate-600 mb-2">Followers Growth Velocity</p>
-                                    <p className="text-3xl font-bold text-[#10B981]">↑ High</p>
+                                    <p className="text-3xl font-bold text-gray-400">N/A</p>
                                 </div>
                             </div>
                         </div>
@@ -131,11 +135,11 @@ export function SocialMediaToolkit() {
                         </div>
 
                         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-                            <MetricTile label="Total Reach" value="156K" sublabel="Last 30 days" />
-                            <MetricTile label="Total Impressions" value="324K" sublabel="Last 30 days" />
-                            <MetricTile label="Avg Reach per Post" value="5.2K" sublabel="Per post" />
-                            <MetricTile label="Profile Visits" value="24.3K" sublabel="Last 30 days" />
-                            <MetricTile label="Discovery %" value="34.5%" sublabel="Non-followers" />
+                            <MetricTile label="Total Reach" value={reachText} sublabel="Est. monthly" />
+                            <MetricTile label="Total Impressions" value="N/A" sublabel="Last 30 days" />
+                            <MetricTile label="Avg Reach per Post" value="N/A" sublabel="Per post" />
+                            <MetricTile label="Profile Visits" value="N/A" sublabel="Last 30 days" />
+                            <MetricTile label="Discovery %" value="N/A" sublabel="Non-followers" />
                         </div>
                     </section>
                 </Tabs.Content>
@@ -151,39 +155,39 @@ export function SocialMediaToolkit() {
                             <div className="flex min-w-max divide-x divide-[#E2E8F0]">
                                 <div className="p-6 text-center w-48 shrink-0">
                                     <p className="text-sm text-slate-600 mb-2">Engagement Rate</p>
-                                    <p className="text-3xl font-bold text-[#2563EB]">4.8%</p>
+                                    <p className="text-3xl font-bold text-[#2563EB]">{engagementText}</p>
                                 </div>
                                 <div className="p-6 text-center w-40 shrink-0">
                                     <div className="flex items-center justify-center gap-2 mb-2">
                                         <ThumbsUp className="w-4 h-4 text-slate-600" />
                                         <p className="text-sm text-slate-600">Average Likes</p>
                                     </div>
-                                    <p className="text-3xl font-bold text-slate-900">1,254</p>
+                                    <p className="text-3xl font-bold text-gray-400">N/A</p>
                                 </div>
                                 <div className="p-6 text-center w-40 shrink-0">
                                     <div className="flex items-center justify-center gap-2 mb-2">
                                         <MessageCircle className="w-4 h-4 text-slate-600" />
                                         <p className="text-sm text-slate-600">Avg Comments</p>
                                     </div>
-                                    <p className="text-3xl font-bold text-slate-900">87</p>
+                                    <p className="text-3xl font-bold text-gray-400">N/A</p>
                                 </div>
                                 <div className="p-6 text-center w-40 shrink-0">
                                     <div className="flex items-center justify-center gap-2 mb-2">
                                         <Bookmark className="w-4 h-4 text-slate-600" />
                                         <p className="text-sm text-slate-600">Avg Saves</p>
                                     </div>
-                                    <p className="text-3xl font-bold text-slate-900">156</p>
+                                    <p className="text-3xl font-bold text-gray-400">N/A</p>
                                 </div>
                                 <div className="p-6 text-center w-40 shrink-0">
                                     <div className="flex items-center justify-center gap-2 mb-2">
                                         <Share2 className="w-4 h-4 text-slate-600" />
                                         <p className="text-sm text-slate-600">Avg Shares</p>
                                     </div>
-                                    <p className="text-3xl font-bold text-slate-900">45</p>
+                                    <p className="text-3xl font-bold text-gray-400">N/A</p>
                                 </div>
                                 <div className="p-6 text-center w-40 shrink-0">
                                     <p className="text-sm text-slate-600 mb-2">Share Rate</p>
-                                    <p className="text-3xl font-bold text-slate-900">2.1%</p>
+                                    <p className="text-3xl font-bold text-gray-400">N/A</p>
                                 </div>
                             </div>
                         </div>

@@ -1,33 +1,79 @@
+"use client";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
-import { notFound } from "next/navigation";
-import { creators, deals } from "@/data/seed";
+import { MapPin, Loader2 } from "lucide-react";
 import { SocialMediaToolkit } from "@/components/social-analytics/SocialMediaToolkit";
 import { formatCurrency, formatNumber, getInitials } from "@/lib/utils";
 
 type CreatorProfileViewProps = {
   handle: string;
   inviteHref?: string;
+  isPreview?: boolean;
 };
 
-export default function CreatorProfileView({ handle, inviteHref = "/auth" }: CreatorProfileViewProps) {
-  const creator = creators.find((c) => c.handle === handle);
-  if (!creator) {
-    notFound();
-  }
+export default function CreatorProfileView({ handle, inviteHref = "/auth", isPreview = false }: CreatorProfileViewProps) {
+  const [creator, setCreator] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const pastBrands = deals.filter((d) => d.creatorId === creator.id).map((d) => ({
-    name: d.brandName,
-    campaign: d.campaign,
-    status: "Completed",
-  }));
+  useEffect(() => {
+    const fetchCreator = async () => {
+      try {
+        const endpoint = isPreview ? "/api/me" : `/api/creators/${handle}`;
+        const response = await axios.get(endpoint);
+        if (response.data && !response.data.error) {
+          const d = response.data;
+          setCreator({
+            id: d.id,
+            name: d.name,
+            handle: d.handle || handle,
+            bio: d.bio,
+            location: d.location,
+            niches: [d.primaryNiche, d.secondaryNiche].filter(Boolean),
+            platforms: {
+              instagram: d.instagram || "",
+              youtube: d.youtube || "",
+              tiktok: d.tiktok || "",
+            },
+            rates: {
+              reel: d.instagramReel || 0,
+              short: d.ytShort || 0,
+              story: d.instagramStory || 0,
+              youtube: d.youtubeIntegration || 0,
+            },
+            portfolioPhotos: Array.isArray(d.portfolioPhotos)
+              ? d.portfolioPhotos
+              : (d.portfolioPhotos ? d.portfolioPhotos.split(",") : []),
+            topContent: d.topContent || [],
+            followers: d.followers || 0,
+            engagement: d.engagement || 0,
+            reliabilityScore: d.reliabilityScore || null,
+            pastBrands: d.pastBrands || []
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch creator", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (pastBrands.length === 0) {
-    pastBrands.push(
-      { name: "TechNova", campaign: "SmartHub Pro Launch", status: "Completed" },
-      { name: "Glow Labs", campaign: "Summer Glow Campaign", status: "Completed" },
+    fetchCreator();
+  }, [handle]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-brand" />
+      </div>
     );
   }
+
+  if (!creator) {
+    return <div className="text-center py-12">Creator not found</div>;
+  }
+
+  const pastBrands = creator.pastBrands || [];
 
   const portfolioPhotos = (creator as { portfolioPhotos?: string[] }).portfolioPhotos;
 
@@ -41,11 +87,13 @@ export default function CreatorProfileView({ handle, inviteHref = "/auth" }: Cre
               {getInitials(creator.name)}
             </div>
             <div className="flex-1 pt-4">
-              <h1 className="font-display text-3xl font-bold">{creator.name}</h1>
+              <h1 className="font-display text-3xl font-bold">{creator.name || "Creator Name"}</h1>
               <p className="text-gray-500">@{creator.handle}</p>
-              <div className="flex items-center gap-2 mt-1 text-sm text-gray-400">
-                <MapPin className="w-4 h-4" /> {creator.location}
-              </div>
+              {creator.location && (
+                <div className="flex items-center gap-2 mt-1 text-sm text-gray-400">
+                  <MapPin className="w-4 h-4" /> {creator.location}
+                </div>
+              )}
             </div>
             <Link
               href={inviteHref}
@@ -54,41 +102,45 @@ export default function CreatorProfileView({ handle, inviteHref = "/auth" }: Cre
               Invite to Collaborate
             </Link>
           </div>
-          <p className="mt-6 text-gray-600 max-w-2xl">{creator.bio}</p>
-          <SocialMediaToolkit />
+          {creator.bio && <p className="mt-6 text-gray-600 max-w-2xl">{creator.bio}</p>}
+          <SocialMediaToolkit creator={creator} />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
             <div className="bg-gray-50 rounded-xl p-4 text-center">
-              <p className="text-2xl font-bold text-[#10B981]">98%</p>
+              <p className={`text-2xl font-bold ${creator.reliabilityScore != null ? 'text-[#10B981]' : 'text-gray-400'}`}>
+                {creator.reliabilityScore != null ? `${creator.reliabilityScore}%` : 'N/A'}
+              </p>
               <p className="text-xs text-gray-500">Reliability Score</p>
             </div>
           </div>
 
-          <div className="mt-8">
-            <h2 className="font-bold text-lg mb-3">Niches</h2>
-            <div className="flex flex-col sm:flex-row gap-4">
-              {creator.niches.map((n, i) => (
-                <div
-                  key={n}
-                  className={`flex items-center gap-2 rounded-xl px-4 py-3 ${i === 0 ? "bg-brand/10 text-brand" : "bg-gray-50 text-gray-700 border border-gray-100"}`}
-                >
-                  <span className="text-sm font-semibold uppercase tracking-wider opacity-70">
-                    {i === 0 ? "Primary:" : "Secondary:"}
-                  </span>
-                  <span className="font-medium">{n}</span>
-                </div>
-              ))}
+          {creator.niches && creator.niches.length > 0 && (
+            <div className="mt-8">
+              <h2 className="font-bold text-lg mb-3">Niches</h2>
+              <div className="flex flex-col sm:flex-row gap-4">
+                {creator.niches.map((n: string, i: number) => (
+                  <div
+                    key={n}
+                    className={`flex items-center gap-2 rounded-xl px-4 py-3 ${i === 0 ? "bg-brand/10 text-brand" : "bg-gray-50 text-gray-700 border border-gray-100"}`}
+                  >
+                    <span className="text-sm font-semibold uppercase tracking-wider opacity-70">
+                      {i === 0 ? "Primary:" : "Secondary:"}
+                    </span>
+                    <span className="font-medium">{n}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="mt-8">
             <h2 className="font-bold text-lg mb-3">Rate Card</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {Object.entries(creator.rates)
-                .filter(([_, value]) => value > 0)
+                .filter(([_, value]) => (value as number) > 0)
                 .map(([type, rate]) => (
                   <div key={type} className="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
                     <span className="text-sm capitalize">{type}</span>
-                    <span className="font-bold">{formatCurrency(rate)}</span>
+                    <span className="font-bold">{formatCurrency(rate as number)}</span>
                   </div>
                 ))}
             </div>
@@ -102,17 +154,17 @@ export default function CreatorProfileView({ handle, inviteHref = "/auth" }: Cre
                 .map(([platform, platformHandle]) => (
                   <div key={platform} className="flex items-center gap-2 bg-gray-50 rounded-xl px-4 py-3 text-sm">
                     <span className="capitalize font-medium">{platform}</span>
-                    <span className="text-gray-500">{platformHandle}</span>
+                    <span className="text-gray-500">{platformHandle as string}</span>
                   </div>
                 ))}
             </div>
           </div>
 
-          {pastBrands.length > 0 && (
-            <div className="mt-8">
-              <h2 className="font-bold text-lg mb-3">Previous History (Brands)</h2>
+          <div className="mt-8">
+            <h2 className="font-bold text-lg mb-3">Previous History (Brands)</h2>
+            {pastBrands.length > 0 ? (
               <div className="space-y-3">
-                {pastBrands.map((brand, i) => (
+                {pastBrands.map((brand: any, i: number) => (
                   <div key={`${brand.name}-${brand.campaign}-${i}`} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
                     <div className="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center text-brand font-bold">{i + 1}</div>
                     <div className="flex-1">
@@ -123,14 +175,18 @@ export default function CreatorProfileView({ handle, inviteHref = "/auth" }: Cre
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                <p className="text-gray-500">No brand collaborations yet.</p>
+              </div>
+            )}
+          </div>
 
           {creator.topContent.length > 0 && (
             <div className="mt-8">
               <h2 className="font-bold text-lg mb-3">Top Content</h2>
               <div className="space-y-3">
-                {creator.topContent.map((content, i) => (
+                {creator.topContent.map((content: any, i: number) => (
                   <div key={`${content.title}-${i}`} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
                     <div className="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center text-brand font-bold">{i + 1}</div>
                     <div className="flex-1">

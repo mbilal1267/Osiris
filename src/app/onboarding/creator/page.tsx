@@ -43,26 +43,26 @@ export default function CreatorOnboarding() {
 
     try {
       if (step === 0) {
-        await axios.post("/api/creator/onboarding/step1", {
+        await axios.post("/api/creator/onboarding/basic-info", {
           name: data.name,
           phoneNumber: data.phone,
           email: data.email || user?.email,
           location: data.location,
         });
       } else if (step === 1) {
-        await axios.post("/api/creator/onboarding/step2", {
+        await axios.post("/api/creator/onboarding/handle", {
           instagram: data.instagram,
           twitter: data.x,
           youtube: data.youtube,
           portfolioPhotos: data.portfolioPhotos,
         });
       } else if (step === 2) {
-        await axios.post("/api/creator/onboarding/step3", {
+        await axios.post("/api/creator/onboarding/niche", {
           primaryNiche: data.primaryNiche,
           secondaryNiche: data.secondaryNiche,
         });
       } else if (step === 3) {
-        await axios.post("/api/creator/onboarding/step5", {
+        await axios.post("/api/creator/onboarding/rate-card", {
           instagramReel: parseFloat(data["Instagram Reel"]) || 0,
           instagramPost: parseFloat(data["Instagram Post"]) || 0,
           ytShort: parseFloat(data["YouTube Short"]) || 0,
