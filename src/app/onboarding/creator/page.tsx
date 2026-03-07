@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth";
 import OnboardingStepper from "@/components/OnboardingStepper";
@@ -18,6 +18,40 @@ export default function CreatorOnboarding() {
   const [toast, setToast] = useState("");
   const router = useRouter();
   const { user, setUser } = useAuthStore();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get("/api/me");
+        if (res.data && !res.data.error) {
+          const profile = res.data;
+          setData((prev) => ({
+            ...prev,
+            name: profile.name || prev.name || "",
+            phone: profile.phoneNumber || prev.phone || "",
+            email: profile.email || prev.email || "",
+            location: profile.location || prev.location || "",
+            instagram: profile.instagram || prev.instagram || "",
+            x: profile.twitter || prev.x || "",
+            youtube: profile.youtube || prev.youtube || "",
+            portfolioPhotos: profile.portfolioPhotos?.length ? profile.portfolioPhotos.join(",") : prev.portfolioPhotos || "",
+            primaryNiche: profile.primaryNiche || prev.primaryNiche || "",
+            secondaryNiche: profile.secondaryNiche || prev.secondaryNiche || "",
+            "Instagram Reel": profile.instagramReel || prev["Instagram Reel"] || "",
+            "Instagram Post": profile.instagramPost || prev["Instagram Post"] || "",
+            "YouTube Short": profile.ytShort || prev["YouTube Short"] || "",
+            "Instagram Story": profile.instagramStory || prev["Instagram Story"] || "",
+            "YouTube Integration": profile.youtubeIntegration || prev["YouTube Integration"] || "",
+            minChargesUSD: profile.amount || prev.minChargesUSD || "",
+            minChargesINR: profile.amount ? (parseFloat(profile.amount) * 83).toFixed(2) : prev.minChargesINR || "",
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch existing profile", err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const update = (key: string, val: any) => setData((d) => ({ ...d, [key]: val }));
 
