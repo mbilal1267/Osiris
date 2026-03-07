@@ -22,7 +22,7 @@ export default function NavbarPublic() {
             </Link>
           </div>
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/auth" className="text-sm font-medium px-5 py-2.5 rounded-full border border-gray-300 hover:bg-gray-50 transition-smooth hover:border-brand/30">
+            <Link href="/auth?tab=login" className="text-sm font-medium px-5 py-2.5 rounded-full border border-gray-300 hover:bg-gray-50 transition-smooth hover:border-brand/30">
               Log in
             </Link>
             <Link href="/auth" className="text-sm font-medium px-5 py-2.5 rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-smooth shadow-md hover:shadow-lg hover-lift">

@@ -25,6 +25,47 @@ function normalizeUser(user: User): User {
   return { ...user, handle: normalizedHandle || fallbackFromEmail };
 }
 
+export function decodeJwtToUser(token: string, fallbackRole?: string): User {
+  try {
+    const payloadBase64 = token.split(".")[1];
+    if (!payloadBase64) throw new Error("Invalid token");
+
+    // Basic base64url decode
+    const base64 = payloadBase64.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    const payload = JSON.parse(jsonPayload);
+
+    const email = payload.sub || payload.email || "";
+    const roleStr = payload.role || fallbackRole || "creator";
+    const role: Role = roleStr.toLowerCase() as Role;
+    const name = email.split("@")[0] || "User";
+
+    return {
+      id: payload.jti || payload.id || "u" + Date.now(),
+      email,
+      role,
+      name,
+      handle: role === "creator" ? name.toLowerCase() : undefined,
+      brandSlug: role === "brand" ? name.toLowerCase() : undefined,
+      onboarded: payload.onboarded || false,
+    };
+  } catch (error) {
+    console.error("Failed to decode token", error);
+    return {
+      id: "error",
+      email: "",
+      role: "creator",
+      name: "Unknown",
+      onboarded: false,
+    };
+  }
+}
+
 interface AuthState {
   user: User | null;
   token: string | null;
@@ -60,7 +101,7 @@ export const useAuthStore = create<AuthState>((set) => {
         setCookie("osiris_token", storedToken);
         setCookie("osiris_role", initialUser!.role);
       }
-    } catch {}
+    } catch { }
   }
   return {
     user: initialUser,
@@ -84,6 +125,7 @@ export const useAuthStore = create<AuthState>((set) => {
       // Clear cookies
       deleteCookie("osiris_token");
       deleteCookie("osiris_role");
+      deleteCookie("osiris_onboarding");
       set({ user: null, token: null });
     },
     setUser: (user) => {

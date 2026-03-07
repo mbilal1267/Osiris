@@ -1,10 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth";
 import OnboardingStepper from "@/components/OnboardingStepper";
 import Link from "next/link";
 import { categories } from "@/data/seed";
+import axios from "axios";
+import { Toast } from "@/components/UIComponents";
 
 const STEPS = ["Company Info", "Details", "Goals", "Budget", "Finish"];
 const BIZ_TYPES = ["E-commerce", "SaaS", "DTC Brand", "Agency", "Retail", "Media", "Non-profit", "Other"];
@@ -14,8 +16,42 @@ const COUNTRIES = ["United States", "United Kingdom", "Canada", "India", "Austra
 export default function BrandOnboarding() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<Record<string, any>>({ markets: [], goals: [] });
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState("");
   const router = useRouter();
   const { user, setUser } = useAuthStore();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get("/api/me");
+        if (res.data && !res.data.error) {
+          const profile = res.data;
+          setData((prev) => ({
+            ...prev,
+            fullName: profile.fullName || prev.fullName || "",
+            businessName: profile.businessName || prev.businessName || "",
+            jobTitle: profile.jobTitle || prev.jobTitle || "",
+            bizType: profile.businessType || prev.bizType || "",
+            gstNumber: profile.gstNumber || prev.gstNumber || "",
+            markets: profile.targetMarkets?.length ? profile.targetMarkets : prev.markets,
+            phone: profile.phoneNumber || prev.phone || "",
+            website: profile.website || prev.website || "",
+            description: profile.brandDescription || prev.description || "",
+            primaryNiche: profile.primaryNiche || prev.primaryNiche || "",
+            secondaryNiche: profile.secondaryNiche || prev.secondaryNiche || "",
+            goals: profile.goals?.length ? profile.goals : prev.goals,
+            budgetUSD: profile.amountUSD || prev.budgetUSD || "",
+            budgetINR: profile.amountINR || prev.budgetINR || "",
+            budget: profile.budgetRange || prev.budget || "",
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch existing profile", err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const update = (key: string, val: any) => setData((d) => ({ ...d, [key]: val }));
   const toggleMarket = (m: string) => update("markets", data.markets.includes(m) ? data.markets.filter((x: string) => x !== m) : [...data.markets, m]);
@@ -36,9 +72,62 @@ export default function BrandOnboarding() {
     }
   };
 
-  const finish = () => {
-    if (user) setUser({ ...user, onboarded: true });
-    router.push("/app/brand");
+  const handleNext = async () => {
+    if (!isStepValid()) return;
+    setLoading(true);
+    setToast("");
+
+    try {
+      if (step === 0) {
+        await axios.post("/api/brand/onboarding/company-info", {
+          fullName: data.fullName,
+          businessName: data.businessName,
+          jobTitle: data.jobTitle,
+          businessType: data.bizType,
+          gstNumber: data.gstNumber,
+          targetMarkets: data.markets,
+          phoneNumber: data.phone,
+          website: data.website,
+        });
+      } else if (step === 1) {
+        await axios.post("/api/brand/onboarding/brand-details", {
+          brandDescription: data.description,
+          primaryNiche: data.primaryNiche,
+          secondaryNiche: data.secondaryNiche,
+        });
+      } else if (step === 2) {
+        await axios.post("/api/brand/onboarding/goals", {
+          goals: data.goals,
+        });
+      } else if (step === 3) {
+        const amountUSD = parseFloat(data.budgetUSD) || 0;
+        const amountINR = parseFloat(data.budgetINR) || 0;
+        await axios.post("/api/brand/onboarding/budget", {
+          amountUSD,
+          amountINR,
+          budgetRange: data.budget,
+        });
+      }
+      setStep(step + 1);
+    } catch (error: any) {
+      console.error("Failed to save step data:", error);
+      setToast(error.response?.data?.error || "Failed to save information.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const finish = async () => {
+    setLoading(true);
+    try {
+      await axios.put("/api/brand/onboarding/finish");
+      if (user) setUser({ ...user, onboarded: true });
+      window.location.href = "/app/brand";
+    } catch (error) {
+      console.error("Failed to finish onboarding:", error);
+      setToast("Failed to complete onboarding.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -132,18 +221,19 @@ export default function BrandOnboarding() {
           )}
         </div>
         <div className="flex justify-between mt-10">
-          {step > 0 && step < 4 && <button onClick={() => setStep(step - 1)} className="px-6 py-3 border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50">Back</button>}
+          {step > 0 && step < 4 && <button onClick={() => setStep(step - 1)} disabled={loading} className="px-6 py-3 border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50 disabled:opacity-50">Back</button>}
           {step < 4 ? (
-            <button onClick={() => {
-              if (isStepValid()) {
-                setStep(step + 1);
-              }
-            }} disabled={!isStepValid()} className="ml-auto px-8 py-3 bg-black text-white font-semibold rounded-xl text-sm hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">Continue</button>
+            <button onClick={handleNext} disabled={!isStepValid() || loading} className="ml-auto px-8 py-3 bg-black text-white font-semibold rounded-xl text-sm hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+              {loading ? "Saving..." : "Continue"}
+            </button>
           ) : (
-            <button onClick={finish} className="ml-auto px-8 py-3 bg-brand text-white font-semibold rounded-xl text-sm hover:bg-brand-dark">Go to Dashboard</button>
+            <button onClick={finish} disabled={loading} className="ml-auto px-8 py-3 bg-brand text-white font-semibold rounded-xl text-sm hover:bg-brand-dark disabled:opacity-50">
+              {loading ? "Finishing..." : "Go to Dashboard"}
+            </button>
           )}
         </div>
       </div>
+      {toast && <Toast message={toast} onClose={() => setToast("")} />}
     </div>
   );
 }

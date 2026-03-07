@@ -2,10 +2,11 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore, decodeJwtToUser } from "@/stores/auth";
 import { Eye, EyeOff } from "lucide-react";
 import { Toast } from "@/components/UIComponents";
 import GoogleButton from "@/components/GoogleButton";
+import axios from "axios";
 
 function LoginForm() {
   const params = useSearchParams();
@@ -24,17 +25,24 @@ function LoginForm() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setError(data.error || "Invalid credentials"); setLoading(false); return; }
-      login(data.user, data.token);
-      router.push(data.user.role === "creator" ? "/app/creator" : "/app/brand");
-    } catch { setError("Something went wrong. Please try again."); }
-    setLoading(false);
+      const res = await axios.post("/api/auth/login", { email, password, role });
+      const data = res.data;
+
+      const token = data.osiris_token || data.token;
+      if (!token) { setError("Authentication failed (no token)"); setLoading(false); return; }
+
+      const user = decodeJwtToUser(token, role);
+      login(user, token);
+      window.location.href = user.role === "creator" ? "/app/creator" : "/app/brand";
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.error || "Invalid credentials");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
