@@ -53,8 +53,15 @@ export async function middleware(req: NextRequest) {
         let isCompleted = false;
 
         if (res.ok) {
-          const data = await res.json();
-          isCompleted = data.completed === true;
+          const text = await res.text();
+          if (text) {
+            try {
+              const data = JSON.parse(text);
+              isCompleted = data.completed === true;
+            } catch (e) {
+              console.error("[Middleware] Failed to parse JSON from backend:", e);
+            }
+          }
         }
 
         if (!isCompleted) {

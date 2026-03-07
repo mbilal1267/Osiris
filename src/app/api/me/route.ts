@@ -10,12 +10,11 @@ export async function GET(req: NextRequest) {
     try {
       backendRes = await fetchBackend(endpoint, { method: "GET" });
     } catch (error: any) {
-      console.log(error);
+      console.error("[api/me] Error fetching backend:", error.message || error);
       return NextResponse.json({ error: "Not authenticated" }, { status: error.response?.status || 500 });
     }
 
     const userData = backendRes.data;
-    console.log(userData);
     return NextResponse.json({ ...userData, role: role });
   } catch (err) {
     return NextResponse.json({ error: "Server Error" }, { status: 500 });
