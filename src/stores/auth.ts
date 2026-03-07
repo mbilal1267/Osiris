@@ -125,6 +125,7 @@ export const useAuthStore = create<AuthState>((set) => {
       // Clear cookies
       deleteCookie("osiris_token");
       deleteCookie("osiris_role");
+      deleteCookie("osiris_onboarding");
       set({ user: null, token: null });
     },
     setUser: (user) => {

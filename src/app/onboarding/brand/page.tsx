@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth";
 import OnboardingStepper from "@/components/OnboardingStepper";
@@ -20,6 +20,38 @@ export default function BrandOnboarding() {
   const [toast, setToast] = useState("");
   const router = useRouter();
   const { user, setUser } = useAuthStore();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get("/api/me");
+        if (res.data && !res.data.error) {
+          const profile = res.data;
+          setData((prev) => ({
+            ...prev,
+            fullName: profile.fullName || prev.fullName || "",
+            businessName: profile.businessName || prev.businessName || "",
+            jobTitle: profile.jobTitle || prev.jobTitle || "",
+            bizType: profile.businessType || prev.bizType || "",
+            gstNumber: profile.gstNumber || prev.gstNumber || "",
+            markets: profile.targetMarkets?.length ? profile.targetMarkets : prev.markets,
+            phone: profile.phoneNumber || prev.phone || "",
+            website: profile.website || prev.website || "",
+            description: profile.brandDescription || prev.description || "",
+            primaryNiche: profile.primaryNiche || prev.primaryNiche || "",
+            secondaryNiche: profile.secondaryNiche || prev.secondaryNiche || "",
+            goals: profile.goals?.length ? profile.goals : prev.goals,
+            budgetUSD: profile.amountUSD || prev.budgetUSD || "",
+            budgetINR: profile.amountINR || prev.budgetINR || "",
+            budget: profile.budgetRange || prev.budget || "",
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch existing profile", err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const update = (key: string, val: any) => setData((d) => ({ ...d, [key]: val }));
   const toggleMarket = (m: string) => update("markets", data.markets.includes(m) ? data.markets.filter((x: string) => x !== m) : [...data.markets, m]);
