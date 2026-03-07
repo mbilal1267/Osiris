@@ -1,26 +1,71 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mockUsers } from "@/data/seed";
+import axios from "axios";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { email, password, role, name } = body;
-  if (!email || !password || !role) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  try {
+    const rawBody = await req.text();
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    const bodyObj = JSON.parse(rawBody);
+
+    // forward raw request directly to Java/Spring real backend auth API
+    let data;
+    try {
+      const backendRes = await axios.post(`${backendUrl}/auth/register`, bodyObj, {
+        headers: { "Content-Type": "application/json" }
+      });
+      data = backendRes.data;
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+        if (status === 401) {
+          // Backend returns 401 for duplicate email on register
+          return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+        }
+        const errorMsg = e.response?.data?.message || e.response?.data?.error || "Signup failed";
+        return NextResponse.json({ error: errorMsg }, { status: status || 500 });
+      }
+      throw e;
+    }
+
+    const token = data.osiris_token || data.token || data.jwt;
+
+    let role = bodyObj.role?.toLowerCase() || "creator";
+
+    try {
+      if (token) {
+        const payloadBase64 = token.split(".")[1];
+        if (payloadBase64) {
+          const payload = JSON.parse(Buffer.from(payloadBase64, "base64").toString("utf-8"));
+          if (payload.role) {
+            role = payload.role.toLowerCase();
+          }
+        }
+      }
+    } catch (e) {
+      console.error("JWT Decode error in signup:", e);
+    }
+
+    const res = NextResponse.json({ osiris_token: token }, { status: 201 });
+
+    const COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
+    res.cookies.set("osiris_token", token, {
+      path: "/",
+      httpOnly: false,
+      maxAge: COOKIE_MAX_AGE,
+      sameSite: "lax",
+    });
+
+    res.cookies.set("osiris_role", role, {
+      path: "/",
+      httpOnly: false,
+      maxAge: COOKIE_MAX_AGE,
+      sameSite: "lax",
+    });
+
+    return res;
+  } catch (error) {
+    return NextResponse.json({ error: "Internal Server Error updating via backend" }, { status: 500 });
   }
-  const exists = mockUsers.find((u) => u.email === email);
-  if (exists) {
-    return NextResponse.json({ error: "User already exists" }, { status: 409 });
-  }
-  const newUser = {
-    id: "u" + Date.now(),
-    email,
-    role,
-    name: name || email.split("@")[0],
-    handle: role === "creator" ? email.split("@")[0].toLowerCase() : undefined,
-    brandSlug: role === "brand" ? email.split("@")[0].toLowerCase() : undefined,
-    onboarded: false,
-  };
-  mockUsers.push({ ...newUser, password });
-  const token = "mock_token_" + Date.now();
-  return NextResponse.json({ user: newUser, token });
 }
+
